@@ -1,0 +1,48 @@
+{# src/OC/PlatformBundle/Resources/views/Advert/index.html.twig #}
+
+{% extends "OCPlatformBundle::layout.html.twig" %}
+
+{% block title %}
+  Accueil - {{ parent() }}
+{% endblock %}
+
+{% block ocplatform_body %}
+
+  {% if listAdverts is not empty %}
+
+    <h2>Liste des annonces</h2>
+
+    <ul>
+      {% for advert in listAdverts %}
+        <li>
+          <a href="{{ path('oc_platform_view', {'id': advert.id}) }}">
+            {{ advert.title }}
+          </a>
+          par {{ advert.author }},
+          le {{ advert.date|date('d/m/Y') }}
+        </li>
+      {% else %}
+        <li>Pas (encore !) d'annonces</li>
+      {% endfor %}
+    </ul>
+
+  {% endif %}
+
+  <br />
+
+  {% if listApplicationsWithAdvert is not empty %}
+
+    <h2>Liste des candidatures</h2>
+
+    <ul>
+      {% for candidature in listApplicationsWithAdvert %}
+        <li>
+          {{ candidature.author }} a postulé à l'annonce "{{ candidature.advert.title }}"
+          le {{ candidature.date|date('d/m/Y') }}
+        </li>
+      {% endfor %}
+    </ul>
+
+  {% endif %}
+
+{% endblock %}

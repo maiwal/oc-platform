@@ -1,0 +1,23 @@
+<body>
+	
+	Ok action delete !
+
+	<br/>
+
+	{% if not advert.applications.empty %}
+
+	<h2>Liste des candidatures pour cette annonce</h2>
+
+	<ul>
+	  {% for application in advert.applications %}
+	    <li>
+	        {{ application.content }}
+	      par {{ application.author }},
+	      le {{ application.date|date('d/m/Y') }}
+	    </li>
+	  {% endfor %}
+	</ul>
+
+	{% endif %}
+
+ </body>
