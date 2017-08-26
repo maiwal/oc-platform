@@ -9,9 +9,9 @@
 {% block ocplatform_body %}
 
   {# On vérifie qu'une image soit bien associée à l'annonce #}
-  {% if advert.image is not null %}
+  {# {% if advert.image is not null %} #}
     <img src="{{ advert.image.url }}" alt="{{ advert.image.alt }}">
-  {% endif %}
+  {# {% endif %} #}
 
   <h2>{{ advert.title }}</h2>
   <i>Par {{ advert.author }}, le {{ advert.date|date('d/m/Y') }}</i>
@@ -51,10 +51,10 @@
 
   <br/>
 
-  {% if listAdvertSkills is not empty %}
+  {% if advert.skills is not empty %}
     <p>
       <b>Cette annonce requière les compétences suivantes :</b><br/>
-      {% for advertSkill in listAdvertSkills %}
+      {% for advertSkill in advert.skills %}
         <i><u>{{ advertSkill.skill.name }}</u>, niveau requis : {{ advertSkill.level }}</i>
         {% if not loop.last %}, {% else %}.{% endif %}<br />
       {% endfor %}

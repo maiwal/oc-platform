@@ -16,25 +16,37 @@ use OC\PlatformBundle\Entity\Application;
 class AdvertController extends Controller
 {
 
-    public function indexAction()
+    public function indexAction($page)
     {
 
-      $em = $this->getDoctrine()->getManager();
+      if ($page == '') $page = 1;
 
-      $listAdverts = $em
-          ->getRepository('OCPlatformBundle:Advert')
-          ->findBy(array(), array('id' => 'desc'))
+      if ($page < 1) {
+        throw new NotFoundHttpException('Page "'.$page.'" inexistante.');
+      }
+
+      $pagination = $this->getDoctrine()
+        ->getManager()
+        ->getRepository('OCPlatformBundle:Advert')
+        ->getAdverts()
       ;
 
-      $listApplicationsWithAdvert = $em
-        ->getRepository('OCPlatformBundle:Application')
-        ->getApplicationsWithAdvert(3)
-      ;
+      // Creating pagnination
+      $paginator  = $this->get('knp_paginator');
+      $listAdverts = $paginator->paginate(
+          $pagination, /* query NOT result */
+          $page, /*page number*/
+          10 /*limit per page*/
+      );
 
-    	return $this->render('OCPlatformBundle:Advert:index.html.twig', array(
-    		'listAdverts' => $listAdverts,
-        'listApplicationsWithAdvert' => $listApplicationsWithAdvert
-    	));
+      $nbOfPage = $listAdverts->getPageCount();
+
+      if ($page > $nbOfPage)
+        return $this->redirectToRoute('oc_platform_home', array('page' => $nbOfPage));
+
+      return $this->render('OCPlatformBundle:Advert:index.html.twig', array(
+        'listAdverts' => $listAdverts
+      ));
     }
 
     public function viewAction($id)
@@ -44,22 +56,15 @@ class AdvertController extends Controller
 
         $advert = $em
           ->getRepository('OCPlatformBundle:Advert')
-          ->find($id)
+          ->getAdvert($id)
         ;
 
         if (null === $advert) {
           throw new NotFoundHttpException("L'annonce d'id ".$id." n'existe pas.");
         }
 
-        // On récupère maintenant la liste des AdvertSkill
-        $listAdvertSkills = $em
-          ->getRepository('OCPlatformBundle:AdvertSkill')
-          ->findBy(array('advert' => $advert))
-        ;
-
         return $this->render('OCPlatformBundle:Advert:view.html.twig', array(
-          'advert'           => $advert,
-          'listAdvertSkills' => $listAdvertSkills
+          'advert' => $advert
         ));
     }
 
@@ -73,26 +78,13 @@ class AdvertController extends Controller
     		return $this->redirectToRoute('oc_platform_view', array('id' => 5));
     	}
 
-      $em = $this->getDoctrine()->getManager();
+      $request->getSession()->getFlashBag()->add(
+        'info',
+        "Il n'est pas encore possible d'ajouter une nouvelle annonce."
+      );
 
-      $advert = new Advert();
-      $advert->setTitle("Annonce Test");
-      $advert->setAuthor("Auteur Test");
-      $advert->setContent("Content Test");
-      $advert->setEmail('maiwalw@gmail.com');
-
-      $application = new Application();
-      $application->setAdvert($advert);
-      $application->setAuthor('test');
-      $application->setContent('test');
-
-      $em->persist($advert);
-      $em->persist($application);
-
-      $em->flush();
-
-      // return $this->redirectToRoute('oc_platform_home');
-      return $this->render('OCPlatformBundle:Advert:add.html.twig');
+      return $this->redirectToRoute('oc_platform_home');
+      // return $this->render('OCPlatformBundle:Advert:add.html.twig');
     }
 
     public function editAction($advert_id, Request $request)
@@ -109,22 +101,23 @@ class AdvertController extends Controller
           throw new NotFoundHttpException("L'annonce d'id ".$advert_id." n'existe pas.");
         }
 
-    	if ($request->isMethod('POST')) {
+      	if ($request->isMethod('POST')) {
 
-    		$request->getSession()->getFlashBag()->add('notice', 'Annonce bien modifiée.');
-    		
-    		return $this->redirectToRoute('oc_platform_view', array('id' => $advert_id));
-    	}
+      		$request->getSession()->getFlashBag()->add('notice', 'Annonce bien modifiée.');
+      		
+      		return $this->redirectToRoute('oc_platform_view', array('id' => $advert_id));
+      	}
 
-      $advert->setTitle("Test changement de titre");
+        $request->getSession()->getFlashBag()->add(
+          'info',
+          "Il n'est pas encore possible de modifier les annonces."
+        );
 
-      $em->flush();
-
-    	return $this->render('OCPlatformBundle:Advert:edit.html.twig');
-      // return $this->redirectToRoute('oc_platform_home');
+        return $this->redirectToRoute('oc_platform_view', array('id' => $advert_id));
+    	// return $this->render('OCPlatformBundle:Advert:edit.html.twig');
     }
 
-    public function deleteAction($id)
+    public function deleteAction($id,Request $request)
     {
 
         $em = $this->getDoctrine()->getManager();
@@ -135,25 +128,17 @@ class AdvertController extends Controller
           throw new NotFoundHttpException("L'annonce d'id ".$id." n'existe pas.");
         }
 
-        /*$applicationMailer = $this->get('oc_platform.email.application_mailer');
+        $request->getSession()->getFlashBag()->add(
+          'info',
+          "Il n'est pas encore possible de supprimer les annonces."
+        );
 
-        foreach ($advert->getApplications() as $application) {
-          $applicationMailer->sendNewNotification($application);
-          // $em->remove($application);
-          break;
-        }
+        return $this->redirectToRoute('oc_platform_view', array('id' => $id));
 
-        $em->flush();*/
-
-    	return $this->render(
-        'OCPlatformBundle:Advert:delete.html.twig',
-        array('advert' => $advert)
-      );
     }
 
-
   	public function menuAction($limit)
- 	{
+ 	  {
     	
       $em = $this->getDoctrine()->getManager();
 
@@ -166,6 +151,22 @@ class AdvertController extends Controller
       		'listAdverts' => $listAdverts
     	));
   	}
+
+    public function purgeAction($days, Request $request)
+    {
+
+      if ($days < 1)
+          throw new NotFoundHttpException("Veuillez saisir au moins 1 jours");
+
+      $this->get('oc_platform.purger.advert')->purge($days);
+      
+      $request->getSession()->getFlashBag()->add(
+        'success',
+        "La purge a bien été effectué sur les annonces n'ayant pas été modifié depuis plus de ".$days." jours."
+      );
+      
+      return $this->redirectToRoute('oc_platform_home');
+    }
 
 }
 

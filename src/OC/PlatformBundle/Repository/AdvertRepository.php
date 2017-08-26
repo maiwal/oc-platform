@@ -9,29 +9,57 @@ namespace OC\PlatformBundle\Repository;
  * repository methods below.
  */
 
-use \Doctrine\ORM\QueryBuilder;
+use Doctrine\ORM\EntityRepository;
 
-class AdvertRepository extends \Doctrine\ORM\EntityRepository
+class AdvertRepository extends EntityRepository
 {
 
-	public function getAdvertWithCategories(array $categoryNames)
+	public function getAdverts()
 	{
-		$qb = $this
-		    ->createQueryBuilder('a')
-		    ->leftJoin('a.categories', 'cat')
-		    ->addSelect('cat')
+		$query = $this->createQueryBuilder('a')
+		    ->leftJoin('a.categories', 'c')
+		    ->addSelect('c')
+		    ->leftJoin('a.image', 'i')
+		    ->addSelect('i')
+		    ->orderBy('a.id', 'DESC')
+      		->getQuery()
 		;
 
-		foreach ($categoryNames as $category) {
-			$qb
-				->andWhere('cat.name = :category')
-	       		->setParameter('category', $category)
-	       	;
-		}
+	    return $query;
+	}
 
-		return $qb
+	public function getAdvert($id)
+	{
+		$query = $this->createQueryBuilder('a')
+		    ->where('a.id = :id')
+		    ->setParameter('id', $id)
+		    ->leftJoin('a.categories', 'c')
+		    ->addSelect('c')
+		    ->leftJoin('a.image', 'i')
+		    ->addSelect('i')
+		    ->leftJoin('a.applications', 'app')
+		    ->addSelect('app')
+		    ->leftJoin('a.skills', 's')
+		    ->addSelect('s')
+		    ->join('s.skill', 'skill')
+		    ->addSelect('skill')
+      		->getQuery()
+		;
+
+	    return $query->getSingleResult();
+	}
+
+	public function getAdvertToPurge($days)
+	{
+		return $this->createQueryBuilder('a')
+			->where('a.updatedAt < :last')
+			->orWhere('a.updatedAt IS NULL AND a.date <= :last') 										 // Si la date de modification est vide, on vérifie la date de création
+			->andWhere('a.applications is empty')
+			->setParameter('last', new \DateTime('-'.$days.' day'), \Doctrine\DBAL\Types\Type::DATETIME) // récupère toutes les annonces dont la date de modification est plus vieille que X jours
 			->getQuery()
 			->getResult()
-		;	
+		;
+
 	}
+
 }

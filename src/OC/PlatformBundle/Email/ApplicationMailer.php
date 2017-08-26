@@ -29,11 +29,11 @@ class ApplicationMailer
     // ;
     // $this->mailer->send($message);
 
-    mail ( 
+    /*mail ( 
       $application->getAdvert()->getEmail(),
       'Nouvelle candidature', 
       'Vous avez reçu une nouvelle candidature.'
-    );
+    );*/
 
   }
 }

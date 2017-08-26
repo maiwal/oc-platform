@@ -3,16 +3,17 @@
 {% extends "OCPlatformBundle::layout.html.twig" %}
 
 {% block title %}
+
   Accueil - {{ parent() }}
+  
 {% endblock %}
 
 {% block ocplatform_body %}
 
-  {% if listAdverts is not empty %}
-
     <h2>Liste des annonces</h2>
 
     <ul>
+
       {% for advert in listAdverts %}
         <li>
           <a href="{{ path('oc_platform_view', {'id': advert.id}) }}">
@@ -26,23 +27,11 @@
       {% endfor %}
     </ul>
 
-  {% endif %}
-
   <br />
 
-  {% if listApplicationsWithAdvert is not empty %}
-
-    <h2>Liste des candidatures</h2>
-
-    <ul>
-      {% for candidature in listApplicationsWithAdvert %}
-        <li>
-          {{ candidature.author }} a postulé à l'annonce "{{ candidature.advert.title }}"
-          le {{ candidature.date|date('d/m/Y') }}
-        </li>
-      {% endfor %}
-    </ul>
-
-  {% endif %}
+  {# display navigation #}
+  <div class="navigation">
+      {{ knp_pagination_render(listAdverts) }}
+  </div>
 
 {% endblock %}

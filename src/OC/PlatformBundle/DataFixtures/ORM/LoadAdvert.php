@@ -17,42 +17,61 @@ class LoadAdvert implements FixtureInterface
   public function load(ObjectManager $manager)
   {
 
+    $date = new \Datetime();
+    $oldDate = $date->modify('-1 year');
+
     // Création de la liste des annonces à ajouter
     $listAdverts = array(
       array(
-      'email'    => 'maiwalw@gmail.com',
-      'title'    => 'Recherche développpeur Symfony',
-      'author'   => 'Alexandre',
-      'content'  => 'Nous recherchons un développeur Symfony débutant sur Lyon. Blabla…',
-      'imageUrl' => 'http://o-c-d.fr/bundles/app/img/symfony/symfony_components.jpg'
+      'email'     => 'maiwalw@gmail.com',
+      'title'     => 'Recherche développpeur Symfony',
+      'author'    => 'Alexandre',
+      'content'   => 'Nous recherchons un développeur Symfony débutant sur Lyon. Blabla…',
+      'imageUrl'  => 'http://o-c-d.fr/bundles/app/img/symfony/symfony_components.jpg'
       ),
       array(
-      'title'    => 'Mission de webmaster',
-      'author'   => 'Hugo',
-      'content'  => 'Nous recherchons un webmaster capable de maintenir notre site internet. Blabla…',
-      'email'    => 'maiwalw@gmail.com',
-      'imageUrl' => 'http://www.soundofsymfony.com/images/logo.png'
+      'title'     => 'Mission de webmaster',
+      'author'    => 'Hugo',
+      'content'   => 'Nous recherchons un webmaster capable de maintenir notre site internet. Blabla…',
+      'email'     => 'maiwalw@gmail.com',
+      'imageUrl'  => 'http://www.soundofsymfony.com/images/logo.png'
       ),
       array(
-      'title'    => 'Chef de chantier',
-      'author'   => 'Marcel',
-      'email'    => 'maiwalw@gmail.com',
-      'content'  => 'Nous recherchons un chef de chantier. Blabla…',
-      'imageUrl' => 'https://it-blog.qarea.com/wp-content/uploads/2014/10/love-symfony.png'
+      'title'     => 'Chef de chantier',
+      'author'    => 'Marcel',
+      'email'     => 'maiwalw@gmail.com',
+      'content'   => 'Nous recherchons un chef de chantier. Blabla…',
+      'imageUrl'  => 'https://it-blog.qarea.com/wp-content/uploads/2014/10/love-symfony.png'
       ),
       array(
-      'title'    => 'Conducteur de metro',
-      'author'   => 'Hugo',
-      'content'  => 'Nous recherchons un conducteur de metro. Blabla…',
-      'imageUrl' => 'https://innobyte.com/wp-content/uploads/2014/02/symfony2-novice-to-ninja-300x152.png',
-      'email'    => 'maiwalw@gmail.com'
+      'title'     => 'Conducteur de metro',
+      'author'    => 'Hugo',
+      'content'   => 'Nous recherchons un conducteur de metro. Blabla…',
+      'imageUrl'  => 'https://innobyte.com/wp-content/uploads/2014/02/symfony2-novice-to-ninja-300x152.png',
+      'email'     => 'maiwalw@gmail.com'
       ),
       array(
-      'title'    => 'Offre de stage webdesigner',
-      'email'    => 'maiwalw@gmail.com',
-      'author'   => 'Mathieu',
-      'content'  => 'Nous proposons un poste pour webdesigner. Blabla…',
-      'imageUrl' => 'http://www.numerogeek.com/files/large/ec09f0c11d40846821f35f3256c59ee9.jpg'
+      'title'     => 'Offre de stage webdesigner',
+      'email'     => 'maiwalw@gmail.com',
+      'author'    => 'Mathieu',
+      'content'   => 'Nous proposons un poste pour webdesigner. Blabla…',
+      'imageUrl'  => 'http://www.numerogeek.com/files/large/ec09f0c11d40846821f35f3256c59ee9.jpg'
+      ),
+      array(
+      'email'     => 'maiwalw@gmail.com',
+      'title'     => 'Recherche développpeur Symfony',
+      'author'    => 'Alexandre',
+      'updatedAt' => $oldDate,
+      'content'   => 'Nous recherchons un développeur Symfony débutant sur Lyon. Blabla…',
+      'imageUrl'  => 'http://o-c-d.fr/bundles/app/img/symfony/symfony_components.jpg'
+      ),
+      array(
+      'title'     => 'Mission de webmaster',
+      'author'    => 'Hugo',
+      'date'      => $oldDate,
+      'content'   => 'Nous recherchons un webmaster capable de maintenir notre site internet. Blabla…',
+      'email'     => 'maiwalw@gmail.com',
+      'imageUrl'  => 'http://www.soundofsymfony.com/images/logo.png'
       )
     );
     /***************************/
@@ -129,11 +148,14 @@ class LoadAdvert implements FixtureInterface
       // Instanciation des objets Application (les candidatures)
       $listApplications = array();
 
-      foreach ($nomsApplications as $application) {
-        $applicationAEnvoyer = new Application();
-        $applicationAEnvoyer->setAuthor($application['author']);
-        $applicationAEnvoyer->setContent($application['content']);
-        $listApplications[] = $applicationAEnvoyer;
+      if (!isset($advert['updatedAt']) && !isset($advert['date']))
+      {
+        foreach ($nomsApplications as $application) {
+          $applicationAEnvoyer = new Application();
+          $applicationAEnvoyer->setAuthor($application['author']);
+          $applicationAEnvoyer->setContent($application['content']);
+          $listApplications[] = $applicationAEnvoyer;
+        }
       }
       /***************************/
 
@@ -142,6 +164,12 @@ class LoadAdvert implements FixtureInterface
       $AnnonceAEnvoyer->setTitle($advert['title']);
       $AnnonceAEnvoyer->setAuthor($advert['author']);
       $AnnonceAEnvoyer->setContent($advert['content']);
+      if (isset($advert['updatedAt'])){
+        $AnnonceAEnvoyer->setUpdatedAt($advert['updatedAt']);
+        $AnnonceAEnvoyer->setDate($advert['updatedAt']);
+      }
+      if (isset($advert['date']))
+        $AnnonceAEnvoyer->setDate($advert['date']);
       $AnnonceAEnvoyer->setEmail($advert['email']);
       $AnnonceAEnvoyer->setImage($image);
       /***************************/

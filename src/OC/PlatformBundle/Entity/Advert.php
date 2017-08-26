@@ -18,6 +18,12 @@ class Advert
 {
 
     /**
+     * @ORM\OneToMany(targetEntity="OC\PlatformBundle\Entity\AdvertSkill", mappedBy="advert", cascade={"persist", "remove"})
+     * @ORM\JoinColumn(nullable=true)
+     */
+    private $skills;
+
+    /**
     * @Gedmo\Slug(fields={"title"})
     * @ORM\Column(name="slug", type="string", length=255, unique=true)
     */
@@ -108,6 +114,7 @@ class Advert
         $this->published = true;
         $this->categories = new ArrayCollection();
         $this->applications = new ArrayCollection();
+        $this->skills = new ArrayCollection();
         $this->nbApplications = 0;  
     }
 
@@ -451,5 +458,39 @@ class Advert
     public function getSlug()
     {
         return $this->slug;
+    }
+
+    /**
+     * Add skill
+     *
+     * @param \OC\PlatformBundle\Entity\AdvertSkill $skill
+     *
+     * @return Advert
+     */
+    public function addSkill(\OC\PlatformBundle\Entity\AdvertSkill $skill)
+    {
+        $this->skills[] = $skill;
+
+        return $this;
+    }
+
+    /**
+     * Remove skill
+     *
+     * @param \OC\PlatformBundle\Entity\AdvertSkill $skill
+     */
+    public function removeSkill(\OC\PlatformBundle\Entity\AdvertSkill $skill)
+    {
+        $this->skills->removeElement($skill);
+    }
+
+    /**
+     * Get skills
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getSkills()
+    {
+        return $this->skills;
     }
 }
