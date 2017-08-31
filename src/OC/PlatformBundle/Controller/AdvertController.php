@@ -9,8 +9,10 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use OC\PlatformBundle\Entity\Advert;
+use OC\PlatformBundle\Form\AdvertType;
+use OC\PlatformBundle\Form\AdvertEditType;
 use OC\PlatformBundle\Entity\AdvertSkill;
-use OC\PlatformBundle\Entity\Image;
+// use OC\PlatformBundle\Entity\Image;
 use OC\PlatformBundle\Entity\Application;
 
 class AdvertController extends Controller
@@ -21,7 +23,7 @@ class AdvertController extends Controller
 
       if ($page == '') $page = 1;
 
-      if ($page < 1) {
+      if ($page < 0) {
         throw new NotFoundHttpException('Page "'.$page.'" inexistante.');
       }
 
@@ -36,7 +38,7 @@ class AdvertController extends Controller
       $listAdverts = $paginator->paginate(
           $pagination, /* query NOT result */
           $page, /*page number*/
-          10 /*limit per page*/
+          20 /*limit per page*/
       );
 
       $nbOfPage = $listAdverts->getPageCount();
@@ -71,50 +73,80 @@ class AdvertController extends Controller
     public function addAction(Request $request)
     {
 
+      $advert = new Advert();
+
+      $form = $this->createForm(AdvertType::class, $advert);
+
     	if ($request->isMethod('POST')) {
 
-    		$request->getSession()->getFlashBag()->add('notice', 'Annonce bien enregistrée.');
-    		
-    		return $this->redirectToRoute('oc_platform_view', array('id' => 5));
+        $form->handleRequest($request);
+
+        if ($form->isValid()) {
+
+          $em = $this->getDoctrine()->getManager();
+          $em->persist($advert);
+          $em->flush();
+
+          $request->getSession()->getFlashBag()->add('success', 'Annonce bien enregistrée.');
+
+          return $this->redirectToRoute('oc_platform_view', array('id' => $advert->getId()));
+        }
+
     	}
 
-      $request->getSession()->getFlashBag()->add(
-        'info',
-        "Il n'est pas encore possible d'ajouter une nouvelle annonce."
-      );
+      return $this->render('OCPlatformBundle:Advert:add.html.twig', array(
+        'form' => $form->createView(),
+      ));
 
-      return $this->redirectToRoute('oc_platform_home');
-      // return $this->render('OCPlatformBundle:Advert:add.html.twig');
     }
 
-    public function editAction($advert_id, Request $request)
+    public function editAction($id, Request $request)
     {
 
         $em = $this->getDoctrine()->getManager();
 
         $advert = $em
           ->getRepository('OCPlatformBundle:Advert')
-          ->find($advert_id)
+          ->find($id)
         ;
 
         if (null === $advert) {
-          throw new NotFoundHttpException("L'annonce d'id ".$advert_id." n'existe pas.");
+          throw new NotFoundHttpException("L'annonce d'id ".$id." n'existe pas.");
         }
 
-      	if ($request->isMethod('POST')) {
+        $form = $this->createForm(AdvertEditType::class, $advert);
 
-      		$request->getSession()->getFlashBag()->add('notice', 'Annonce bien modifiée.');
-      		
-      		return $this->redirectToRoute('oc_platform_view', array('id' => $advert_id));
-      	}
+        if ($request->isMethod('POST')) {
 
-        $request->getSession()->getFlashBag()->add(
-          'info',
-          "Il n'est pas encore possible de modifier les annonces."
-        );
+            $form->handleRequest($request);
 
-        return $this->redirectToRoute('oc_platform_view', array('id' => $advert_id));
-    	// return $this->render('OCPlatformBundle:Advert:edit.html.twig');
+            if ($form->isValid()) {
+
+              // $image = $advert->getImage();
+
+              // if ($image != null) {
+              //   dump($image);
+              //   exit();
+              //   if ($image->getImageFile() != null) {
+              //     $advert->setImage();
+              //     $em->remove($image);
+              //   }
+              // }
+
+              $em->flush();
+
+              $request->getSession()->getFlashBag()->add('success', 'Annonce bien modifiée.');
+
+              return $this->redirectToRoute('oc_platform_view', array('id' => $advert->getId()));
+            } 
+
+        }
+
+      	return $this->render('OCPlatformBundle:Advert:edit.html.twig', array(
+          'advert' => $advert,
+          'form' => $form->createView()
+        ));
+
     }
 
     public function deleteAction($id,Request $request)
@@ -166,6 +198,39 @@ class AdvertController extends Controller
       );
       
       return $this->redirectToRoute('oc_platform_home');
+    }
+
+    public function categoriesAction($page)
+    {
+
+      if ($page == '') $page = 1;
+
+      if ($page < 1) {
+        throw new NotFoundHttpException('Page "'.$page.'" inexistante.');
+      }
+
+      $pagination = $this->getDoctrine()
+        ->getManager()
+        ->getRepository('OCPlatformBundle:Category')
+        ->getCategories()
+      ;
+
+      // Creating pagnination
+      $paginator  = $this->get('knp_paginator');
+      $listCategories = $paginator->paginate(
+          $pagination, /* query NOT result */
+          $page, /*page number*/
+          20 /*limit per page*/
+      );
+
+      $nbOfPage = $listCategories->getPageCount();
+
+      if ($page > $nbOfPage)
+        return $this->redirectToRoute('oc_platform_categories', array('page' => $nbOfPage));
+
+      return $this->render('OCPlatformBundle:Advert:categories.html.twig', array(
+        'listCategories' => $listCategories
+      ));
     }
 
 }

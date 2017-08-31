@@ -30,4 +30,5 @@ class ApplicationCreationListener
 
     $this->applicationMailer->sendNewNotification($entity);
   }
+
 }

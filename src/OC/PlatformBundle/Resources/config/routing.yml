@@ -19,7 +19,7 @@ oc_platform_add:
         _controller: OCPlatformBundle:Advert:add
 
 oc_platform_edit:
-    path: /edit/{advert_id}
+    path: /edit/{id}
     defaults:   
         _controller: OCPlatformBundle:Advert:edit
     requirements:
@@ -38,3 +38,11 @@ oc_platform_purge:
         _controller: OCPlatformBundle:Advert:purge
     requirements:
         days: \d+
+
+oc_platform_categories:
+    path: /categories/{page}
+    defaults: 
+        _controller: OCPlatformBundle:Advert:categories
+        page: 1
+    requirements:
+        page: \d*

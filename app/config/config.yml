@@ -38,6 +38,8 @@ framework:
 twig:
     debug: '%kernel.debug%'
     strict_variables: '%kernel.debug%'
+    form_themes:
+        - 'bootstrap_3_layout.html.twig'
 
 # Doctrine Configuration
 doctrine:
@@ -77,6 +79,7 @@ stof_doctrine_extensions:
         default:
             sluggable: true
 
+# Pagination configuration
 knp_paginator:
     # page_range: 3                     # default page range used in pagination control
     default_options:
@@ -87,3 +90,16 @@ knp_paginator:
     template:
         pagination: 'KnpPaginatorBundle:Pagination:twitter_bootstrap_v3_pagination.html.twig'     # sliding pagination controls template
         sortable: 'KnpPaginatorBundle:Pagination:sortable_link.html.twig' # sort link template
+
+vich_uploader:
+    db_driver: orm
+
+    mappings:
+        advert_image:
+            uri_prefix:         http://localhost/symfony/web/uploads/images/adverts
+            upload_destination: %kernel.root_dir%/../web/uploads/images/adverts
+            namer:              vich_uploader.namer_uniqid
+
+            inject_on_load:     false
+            delete_on_update:   true
+            delete_on_remove:   true

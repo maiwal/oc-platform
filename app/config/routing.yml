@@ -4,3 +4,6 @@ oc_core:
 oc_platform:
     resource: "@OCPlatformBundle/Resources/config/routing.yml"
     prefix:   /platform
+
+_liip_imagine:
+    resource: "@LiipImagineBundle/Resources/config/routing.xml"

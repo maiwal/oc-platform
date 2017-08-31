@@ -6,6 +6,8 @@ namespace OC\PlatformBundle\Entity;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
+use Symfony\Component\HttpFoundation\File\File;
+use Vich\UploaderBundle\Mapping\Annotation as Vich;
 
 /**
  * Advert
@@ -19,7 +21,6 @@ class Advert
 
     /**
      * @ORM\OneToMany(targetEntity="OC\PlatformBundle\Entity\AdvertSkill", mappedBy="advert", cascade={"persist", "remove"})
-     * @ORM\JoinColumn(nullable=true)
      */
     private $skills;
 
@@ -30,8 +31,8 @@ class Advert
     private $slug;
 
     /**
-    * @ORM\Column(name="nb_applications", type="integer")
-    */
+     * @ORM\Column(name="nb_applications", type="integer")
+     */
     private $nbApplications;
 
     /**
@@ -49,12 +50,6 @@ class Advert
      * @ORM\JoinTable(name="oc_advert_category")
      */
     private $categories;
-    
-    /**
-     * @ORM\OneToOne(targetEntity="OC\PlatformBundle\Entity\Image", cascade={"persist"})
-     * @ORM\JoinColumn(nullable=true)
-     */
-    private $image;
 
     /**
      * @var int
@@ -82,22 +77,21 @@ class Advert
     /**
      * @var string
      *
-     * @ORM\Column(name="author", type="string", length=255)
+     * @ORM\Column(name="author", type="string", length=255, nullable=true)
      */
     private $author;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="email", type="string", length=255)
-     * @ORM\JoinColumn(nullable=true)
+     * @ORM\Column(name="email", type="string", length=255, nullable=true)
      */
     private $email;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="content", type="text")
+     * @ORM\Column(name="content", type="text",nullable=true)
      */
     private $content;
 
@@ -107,16 +101,23 @@ class Advert
      */
     private $published;
 
+    /**
+     * @ORM\OneToOne(targetEntity="OC\PlatformBundle\Entity\Image", cascade={"persist","remove"}, inversedBy="advert")
+     * @ORM\JoinColumn(nullable=true)
+     */
+    private $image;
+
 
     public function __construct()
     {
         $this->date = new \Datetime();
-        $this->published = true;
+        $this->published = false;
         $this->categories = new ArrayCollection();
         $this->applications = new ArrayCollection();
         $this->skills = new ArrayCollection();
         $this->nbApplications = 0;  
     }
+
 
     public function increaseApplication()
     {
@@ -266,30 +267,6 @@ class Advert
     public function getPublished()
     {
         return $this->published;
-    }
-
-    /**
-     * Set image
-     *
-     * @param \OC\PlatformBundle\Entity\Image $image
-     *
-     * @return Advert
-     */
-    public function setImage(\OC\PlatformBundle\Entity\Image $image = null)
-    {
-        $this->image = $image;
-
-        return $this;
-    }
-
-    /**
-     * Get image
-     *
-     * @return \OC\PlatformBundle\Entity\Image
-     */
-    public function getImage()
-    {
-        return $this->image;
     }
 
     /**
@@ -492,5 +469,29 @@ class Advert
     public function getSkills()
     {
         return $this->skills;
+    }
+
+    /**
+     * Set image
+     *
+     * @param \OC\PlatformBundle\Entity\Image $image
+     *
+     * @return Advert
+     */
+    public function setImage(\OC\PlatformBundle\Entity\Image $image = null)
+    {
+        $this->image = $image;
+
+        return $this;
+    }
+
+    /**
+     * Get image
+     *
+     * @return \OC\PlatformBundle\Entity\Image
+     */
+    public function getImage()
+    {
+        return $this->image;
     }
 }

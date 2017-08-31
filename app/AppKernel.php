@@ -16,9 +16,11 @@ class AppKernel extends Kernel
             new Doctrine\Bundle\DoctrineBundle\DoctrineBundle(),
             new Sensio\Bundle\FrameworkExtraBundle\SensioFrameworkExtraBundle(),
             new OC\PlatformBundle\OCPlatformBundle(),
-            new Stof\DoctrineExtensionsBundle\StofDoctrineExtensionsBundle(),
             new OC\CoreBundle\OCCoreBundle(),
-            new Knp\Bundle\PaginatorBundle\KnpPaginatorBundle()
+            new Stof\DoctrineExtensionsBundle\StofDoctrineExtensionsBundle(),
+            new Knp\Bundle\PaginatorBundle\KnpPaginatorBundle(),
+            new Liip\ImagineBundle\LiipImagineBundle(),
+            new Vich\UploaderBundle\VichUploaderBundle()
         ];
 
         if (in_array($this->getEnvironment(), ['dev', 'test'], true)) {

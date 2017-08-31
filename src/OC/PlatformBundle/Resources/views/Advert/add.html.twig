@@ -1,2 +1,15 @@
-Ok add !
-<body></body>
+{# src/OC/PlatformBundle/Resources/views/Advert/add.html.twig #}
+
+{% extends "OCPlatformBundle::layout.html.twig" %}
+
+{% block title %}
+
+  Ajouter une annonce - {{ parent() }}
+  
+{% endblock %}
+
+{% block ocplatform_body %}
+
+	{{ include("OCPlatformBundle:Advert:form.html.twig") }}
+
+{% endblock %}

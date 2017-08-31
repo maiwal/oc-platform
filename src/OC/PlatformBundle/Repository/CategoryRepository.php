@@ -10,4 +10,23 @@ namespace OC\PlatformBundle\Repository;
  */
 class CategoryRepository extends \Doctrine\ORM\EntityRepository
 {
+
+	public function getLikeQueryBuilder($pattern)
+	{
+		return $this
+		  ->createQueryBuilder('c')
+		  ->where('c.name LIKE :pattern')
+		  ->setParameter('pattern', $pattern)
+		;
+	}
+
+	public function getCategories()
+	{
+		$query = $this->createQueryBuilder('c')
+		    ->orderBy('c.id', 'DESC')
+      		->getQuery()
+		;
+
+	    return $query;
+	}
 }

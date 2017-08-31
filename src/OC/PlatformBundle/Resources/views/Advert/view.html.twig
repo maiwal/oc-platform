@@ -9,9 +9,10 @@
 {% block ocplatform_body %}
 
   {# On vérifie qu'une image soit bien associée à l'annonce #}
-  {# {% if advert.image is not null %} #}
-    <img src="{{ advert.image.url }}" alt="{{ advert.image.alt }}">
-  {# {% endif %} #}
+  {% if advert.image is not null %}
+    <img src="{{ vich_uploader_asset(advert.image, 'imageFile') }}" alt="{{ advert.title }}" />
+    {# <img src="{{ relative_path(vich_uploader_asset(advert, 'imageFile')) }}" alt="{{ advert.title }}" /> #}
+  {% endif %}
 
   <h2>{{ advert.title }}</h2>
   <i>Par {{ advert.author }}, le {{ advert.date|date('d/m/Y') }}</i>
@@ -20,7 +21,7 @@
     {{ advert.content }}
   </div>
 
-  {% if not advert.applications.empty %}
+  {% if advert.applications is not empty %}
 
   <h2>Liste des candidatures pour cette annonce</h2>
 
@@ -38,7 +39,7 @@
   
   <br/>
 
-  {% if not advert.categories.empty %}
+  {% if advert.categories is not empty %}
 
     <p>
       <b>Cette annonce est parue dans les catégories suivantes :</b><br/>
@@ -66,7 +67,7 @@
       <i class="glyphicon glyphicon-chevron-left"></i>
       Retour à la liste
     </a>
-    <a href="{{ path('oc_platform_edit', {'advert_id': advert.id}) }}" class="btn btn-default">
+    <a href="{{ path('oc_platform_edit', {'id': advert.id}) }}" class="btn btn-default">
       <i class="glyphicon glyphicon-edit"></i>
       Modifier l'annonce
     </a>

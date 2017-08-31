@@ -19,8 +19,6 @@ class AdvertRepository extends EntityRepository
 		$query = $this->createQueryBuilder('a')
 		    ->leftJoin('a.categories', 'c')
 		    ->addSelect('c')
-		    ->leftJoin('a.image', 'i')
-		    ->addSelect('i')
 		    ->orderBy('a.id', 'DESC')
       		->getQuery()
 		;
@@ -35,18 +33,18 @@ class AdvertRepository extends EntityRepository
 		    ->setParameter('id', $id)
 		    ->leftJoin('a.categories', 'c')
 		    ->addSelect('c')
-		    ->leftJoin('a.image', 'i')
-		    ->addSelect('i')
 		    ->leftJoin('a.applications', 'app')
 		    ->addSelect('app')
 		    ->leftJoin('a.skills', 's')
 		    ->addSelect('s')
-		    ->join('s.skill', 'skill')
+		    ->leftJoin('s.skill', 'skill')
 		    ->addSelect('skill')
+		    ->leftJoin('a.image', 'i')
+		    ->addSelect('i')
       		->getQuery()
 		;
 
-	    return $query->getSingleResult();
+	    return $query->getOneOrNullResult();
 	}
 
 	public function getAdvertToPurge($days)
