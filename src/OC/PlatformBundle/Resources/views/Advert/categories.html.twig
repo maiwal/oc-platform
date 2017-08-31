@@ -1,0 +1,35 @@
+{# src/OC/PlatformBundle/Resources/views/category/index.html.twig #}
+
+{% extends "OCPlatformBundle::layout.html.twig" %}
+
+{% block title %}
+
+  Liste des catégories - {{ parent() }}
+  
+{% endblock %}
+
+{% block ocplatform_body %}
+
+    <h2>Liste des Catégories</h2>
+
+    <ul>
+
+      {% for category in listCategories %}
+        <li>
+          {# <a href="{{ path('oc_platform_view_categor', {'id': category.id}) }}"> #}
+            {{ category.name }}
+          {# </a> #}
+        </li>
+      {% else %}
+        <li>Pas (encore !) de catégory</li>
+      {% endfor %}
+    </ul>
+
+  <br />
+
+  {# display navigation #}
+  <div class="navigation">
+      {{ knp_pagination_render(listCategories) }}
+  </div>
+
+{% endblock %}

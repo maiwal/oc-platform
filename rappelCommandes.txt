@@ -1,0 +1,30 @@
+/*******************************/
+
+composer require --dev doctrine/doctrine-fixtures-bundle
+php bin/console doctrine:fixtures:load
+
+/*******************************/
+
+php bin/console generate:doctrine:entity
+php bin/console generate:doctrine:entities OCPlatformBundle:Advert
+
+/*******************************/
+
+php bin/console doctrine:database:drop --force
+php bin/console doctrine:database:create
+php bin/console doctrine:schema:update --force
+
+/*******************************/
+
+php bin/console debug:container
+
+/*******************************/
+
+php bin/console doctrine:generate:form OCPlatformBundle:Advert
+
+/*******************************/
+
+../composer.phar update
+../composer.phar install
+
+/*******************************/
