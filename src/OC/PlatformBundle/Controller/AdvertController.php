@@ -154,15 +154,25 @@ class AdvertController extends Controller
           throw new NotFoundHttpException("L'annonce d'id ".$id." n'existe pas.");
         }
 
-        $em->remove($advert);
-        $em->flush();
+        // On crée un formulaire vide, qui ne contiendra que le champ CSRF
+        // Cela permet de protéger la suppression d'annonce contre cette faille
+        $form = $this->get('form.factory')->create();
 
-        $request->getSession()->getFlashBag()->add(
-          'success',
-          "Annonce supprimée."
-        );
+        if ($request->isMethod('POST') && $form->handleRequest($request)->isValid()) {
+          $em->remove($advert);
+          $em->flush();
 
-        return $this->redirectToRoute('oc_platform_home');
+          $request->getSession()->getFlashBag()->add(
+            'success',
+            "L'annonce a bien été supprimée.");
+
+          return $this->redirectToRoute('oc_platform_home');
+        }
+        
+        return $this->render('OCPlatformBundle:Advert:delete.html.twig', array(
+          'advert' => $advert,
+          'form'   => $form->createView(),
+        ));
 
     }
 

@@ -71,54 +71,10 @@
       <i class="glyphicon glyphicon-edit"></i>
       Modifier l'annonce
     </a>
-    <a href="#" class="btn btn-danger" data-toggle="modal" data-target="#confirm-delete">
+    <a href="{{ path('oc_platform_delete', {'id': advert.id}) }}" class="btn btn-danger">
       <i class="glyphicon glyphicon-trash"></i>
       Supprimer l'annonce
     </a>
   </p>
-
-  <div class="modal fade" id="confirm-delete" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-                    <h4 class="modal-title" id="myModalLabel">Confirmation suppression</h4>
-                </div>
-                <div class="modal-body">
-                    <p>Etes vous sûr de vouloir supprimer l'annonce<b> <i class="title">{{ advert.title }}</i></b> ?</p>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-default" data-dismiss="modal">Annuler</button>
-                    <a href="{{ path('oc_platform_delete', {'id': advert.id}) }}" type="button" class="btn btn-danger btn-ok">Je confirme, supprimer l'annonce</a>
-                </div>
-            </div>
-        </div>
-    </div>
-
-{% endblock %}
-
-{% block javascripts %}
-
-  <script data-require="jquery@*" data-semver="2.0.3" src="http://code.jquery.com/jquery-2.0.3.min.js"></script>
-  <script data-require="bootstrap@*" data-semver="3.1.1" src="//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
-  <script>
-        $('#confirm-delete').on('click', '.btn-ok', function(e) {
-            var $modalDiv = $(e.delegateTarget);
-            var id = $(this).data('recordId');
-            // $.ajax({url: '/api/record/' + id, type: 'DELETE'})
-            // $.post('/api/record/' + id).then()
-            $modalDiv.addClass('loading');
-            setTimeout(function() {
-                $modalDiv.modal('hide').removeClass('loading');
-            }, 1000)
-        });
-        $('#confirm-delete').on('show.bs.modal', function(e) {
-            var data = $(e.relatedTarget).data();
-            $('.title', this).text(data.recordTitle);
-            $('.btn-ok', this).data('recordId', data.recordId);
-        });
-    </script>
-
-    {{ parent() }}
 
 {% endblock %}
