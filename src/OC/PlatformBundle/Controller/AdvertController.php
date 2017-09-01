@@ -11,9 +11,6 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use OC\PlatformBundle\Entity\Advert;
 use OC\PlatformBundle\Form\AdvertType;
 use OC\PlatformBundle\Form\AdvertEditType;
-use OC\PlatformBundle\Entity\AdvertSkill;
-// use OC\PlatformBundle\Entity\Image;
-use OC\PlatformBundle\Entity\Application;
 
 class AdvertController extends Controller
 {
@@ -83,6 +80,8 @@ class AdvertController extends Controller
 
         if ($form->isValid()) {
 
+          // $advert->getImage()->setPreviewName();
+
           $em = $this->getDoctrine()->getManager();
           $em->persist($advert);
           $em->flush();
@@ -122,17 +121,6 @@ class AdvertController extends Controller
 
             if ($form->isValid()) {
 
-              // $image = $advert->getImage();
-
-              // if ($image != null) {
-              //   dump($image);
-              //   exit();
-              //   if ($image->getImageFile() != null) {
-              //     $advert->setImage();
-              //     $em->remove($image);
-              //   }
-              // }
-
               $em->flush();
 
               $request->getSession()->getFlashBag()->add('success', 'Annonce bien modifiée.');
@@ -140,6 +128,12 @@ class AdvertController extends Controller
               return $this->redirectToRoute('oc_platform_view', array('id' => $advert->getId()));
             } 
 
+        }
+
+        // Permet de se rappeler de l'image pour la supprimer dans le cache
+        if ($advert->getImage() != null) {
+          $advert->getImage()->setPreviewName();
+          $em->flush();
         }
 
       	return $this->render('OCPlatformBundle:Advert:edit.html.twig', array(
@@ -160,12 +154,15 @@ class AdvertController extends Controller
           throw new NotFoundHttpException("L'annonce d'id ".$id." n'existe pas.");
         }
 
+        $em->remove($advert);
+        $em->flush();
+
         $request->getSession()->getFlashBag()->add(
-          'info',
-          "Il n'est pas encore possible de supprimer les annonces."
+          'success',
+          "Annonce supprimée."
         );
 
-        return $this->redirectToRoute('oc_platform_view', array('id' => $id));
+        return $this->redirectToRoute('oc_platform_home');
 
     }
 
@@ -205,7 +202,7 @@ class AdvertController extends Controller
 
       if ($page == '') $page = 1;
 
-      if ($page < 1) {
+      if ($page < 0) {
         throw new NotFoundHttpException('Page "'.$page.'" inexistante.');
       }
 

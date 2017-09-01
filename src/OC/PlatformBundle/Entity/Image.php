@@ -46,6 +46,13 @@ class Image
     private $imageName;
 
     /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     *
+     * @var string
+     */
+    private $previewName;
+
+    /**
      * @ORM\Column(type="integer")
      *
      * @var integer
@@ -109,6 +116,16 @@ class Image
     public function getImageName()
     {
         return $this->imageName;
+    }
+
+    public function setPreviewName()
+    {
+        $this->previewName = $this->imageName;
+    }
+
+    public function getPreviewName()
+    {
+        return $this->previewName;
     }
     
     /**

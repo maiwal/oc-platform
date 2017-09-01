@@ -21,11 +21,11 @@
           </a>
           par {{ advert.author }},
           le {{ advert.date|date('d/m/Y') }}
+          {% if advert.image is not null %} <span style="color:green"><b>(avec image)</b></span>{% endif %}
         </li>
       {% else %}
         <li>Pas encore d'annonces</li>
-      {% endfor %}
-    </ul>
+      {% endfor %}</span>    </ul>
 
   <br />
 

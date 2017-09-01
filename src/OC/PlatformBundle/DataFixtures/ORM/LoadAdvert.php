@@ -140,9 +140,9 @@ class LoadAdvert implements FixtureInterface
     foreach ($listAdverts as $advert) {
 
       // Instanciation de l'objet Image
-      $image = new Image();
-      $image->setUrl($advert['imageUrl']);
-      $image->setAlt($advert['title']);
+      // $image = new Image();
+      // $image->setUrl($advert['imageUrl']);
+      // $image->setAlt($advert['title']);
       /***************************/
 
       // Instanciation des objets Application (les candidatures)
@@ -171,7 +171,7 @@ class LoadAdvert implements FixtureInterface
       if (isset($advert['date']))
         $AnnonceAEnvoyer->setDate($advert['date']);
       $AnnonceAEnvoyer->setEmail($advert['email']);
-      $AnnonceAEnvoyer->setImage($image);
+      // $AnnonceAEnvoyer->setImage($image);
       /***************************/
 
       // Liaison des candidatures à l'annonce

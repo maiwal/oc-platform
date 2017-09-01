@@ -35,7 +35,10 @@ class AdvertType extends AbstractType
           ->add('title',     TextType::class)
           ->add('author',    TextType::class)
           ->add('content',   TextareaType::class)
-          ->add('image',     ImageType::class, array('required' => false))
+          ->add('image',     ImageType::class, array(
+            'required' => false,
+            'label'    => false
+            ))
             
           ->add('categories', EntityType::class, array(
             'class'        => 'OCPlatformBundle:Category',
