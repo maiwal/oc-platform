@@ -94,6 +94,7 @@ class AdvertController extends Controller
     	}
 
       return $this->render('OCPlatformBundle:Advert:add.html.twig', array(
+        'advert' => $advert,
         'form' => $form->createView(),
       ));
 
@@ -126,14 +127,8 @@ class AdvertController extends Controller
               $request->getSession()->getFlashBag()->add('success', 'Annonce bien modifiée.');
 
               return $this->redirectToRoute('oc_platform_view', array('id' => $advert->getId()));
-            } 
+            }
 
-        }
-
-        // Permet de se rappeler de l'image pour la supprimer dans le cache
-        if ($advert->getImage() != null) {
-          $advert->getImage()->setPreviewName();
-          $em->flush();
         }
 
       	return $this->render('OCPlatformBundle:Advert:edit.html.twig', array(

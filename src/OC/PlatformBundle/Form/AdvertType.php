@@ -9,6 +9,7 @@ use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use OC\PlatformBundle\Form\ImageType;
 
@@ -31,15 +32,19 @@ class AdvertType extends AbstractType
         // $pattern = 'D%';
 
         $builder
-          ->add('date',      DateTimeType::class)
-          ->add('title',     TextType::class)
-          ->add('author',    TextType::class)
-          ->add('content',   TextareaType::class)
           ->add('image',     ImageType::class, array(
             'required' => false,
             'label'    => false
             ))
-            
+          ->add('delete_image', CheckboxType::class, array(
+            'required' => false,
+            'label' => "Pas d'image pour cette annonce."
+            ))
+          ->add('date',      DateTimeType::class)
+          ->add('title',     TextType::class)
+          ->add('author',    TextType::class)
+          ->add('email',    EmailType::class)
+          ->add('content',   TextareaType::class)
           ->add('categories', EntityType::class, array(
             'class'        => 'OCPlatformBundle:Category',
             'choice_label' => 'name',
@@ -48,8 +53,8 @@ class AdvertType extends AbstractType
             // 'query_builder' => function(CategoryRepository $repository) use($pattern) {
             //   return $repository->getLikeQueryBuilder($pattern);
             // }
-           ))
-
+            ))
+          
           ->add('save',      SubmitType::class)
 
           ->addEventListener(
@@ -68,8 +73,20 @@ class AdvertType extends AbstractType
                   // Sinon, on le supprime
                   $event->getForm()->remove('published');
               
+                if ($advert->getImage() === null)
+                  $event->getForm()->remove('delete_image');
               }
-          )
+            )
+          ->addEventListener(FormEvents::PRE_SUBMIT, function (FormEvent $event) {
+
+                $advert = $event->getData();
+                // on ne traite pas l'upload si il y a demande de suppression
+                if (isset($advert['delete_image'])) {
+                  $advert['image']['imageFile'] = null;
+                  $event->setData($advert);
+                }
+            })
+
         ;
     }
     
@@ -79,6 +96,7 @@ class AdvertType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults(array(
+            'allow_extra_fields' => true,
             'data_class' => 'OC\PlatformBundle\Entity\Advert'
         ));
     }

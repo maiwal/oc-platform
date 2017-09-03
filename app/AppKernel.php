@@ -19,8 +19,7 @@ class AppKernel extends Kernel
             new OC\CoreBundle\OCCoreBundle(),
             new Stof\DoctrineExtensionsBundle\StofDoctrineExtensionsBundle(),
             new Knp\Bundle\PaginatorBundle\KnpPaginatorBundle(),
-            new Liip\ImagineBundle\LiipImagineBundle(),
-            new Vich\UploaderBundle\VichUploaderBundle()
+            new Liip\ImagineBundle\LiipImagineBundle()
         ];
 
         if (in_array($this->getEnvironment(), ['dev', 'test'], true)) {

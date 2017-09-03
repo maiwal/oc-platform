@@ -3,9 +3,17 @@
 <h3>Formulaire d'annonce</h3>
 
 <div class="well">
-  {{ form(form) }}
 
-  {# {{ form_start(form) }}
+	{% if advert.image is not null %}
+		{# <img src="{{ vich_uploader_asset(advert.image, 'imageFile') | imagine_filter('my_thumb') }}" alt="Aperçu de l'image" />#}
+		<img src="{{ advert.image.path | imagine_filter('my_thumb') }}" alt="Aperçu de l'image" />
+		<br/>
+		<br/> 
+	{% endif %}
+
+	{{ form(form) }}
+
+	{# {{ form_start(form) }}
 
 	  {% if form.date is defined %}
 	  	{{ form_row(form.date) }}
@@ -21,7 +29,7 @@
 
 	  {{ form_rest(form) }}
 
-  {{ form_end(form) }} #}
+	{{ form_end(form) }} #}
 
 
 </div>

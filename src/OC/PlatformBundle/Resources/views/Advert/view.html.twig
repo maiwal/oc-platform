@@ -10,8 +10,9 @@
 
   {# On vérifie qu'une image soit bien associée à l'annonce #}
   {% if advert.image is not null %}
-    <img src="{{ vich_uploader_asset(advert.image, 'imageFile') | imagine_filter('my_thumb') }}" alt="{{ advert.title }}" />
+    {# <img src="{{ vich_uploader_asset(advert.image, 'imageFile') | imagine_filter('image_advert') }}" alt="{{ advert.title }}" /> #}
     {# <img src="{{ relative_path(vich_uploader_asset(advert, 'imageFile')) }}" alt="{{ advert.title }}" /> #}
+    <img src="{{ advert.image.path | imagine_filter('image_advert') }}" alt="" />
   {% endif %}
 
   <h2>{{ advert.title }}</h2>

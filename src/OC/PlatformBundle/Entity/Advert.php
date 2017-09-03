@@ -4,10 +4,12 @@
 namespace OC\PlatformBundle\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
+
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
-use Symfony\Component\HttpFoundation\File\File;
-use Vich\UploaderBundle\Mapping\Annotation as Vich;
+use Symfony\Component\Validator\Constraints as Assert;
+
+use Symfony\Component\Validator\Context\ExecutionContextInterface;
 
 /**
  * Advert
@@ -64,6 +66,7 @@ class Advert
      * @var \DateTime
      *
      * @ORM\Column(name="date", type="datetime")
+     * @Assert\DateTime()
      */
     private $date;
 
@@ -71,6 +74,7 @@ class Advert
      * @var string
      *
      * @ORM\Column(name="title", type="string", length=255)
+     * @Assert\Length(min=10)
      */
     private $title;
 
@@ -78,6 +82,7 @@ class Advert
      * @var string
      *
      * @ORM\Column(name="author", type="string", length=255, nullable=true)
+     * @Assert\Length(min=2)
      */
     private $author;
 
@@ -85,6 +90,7 @@ class Advert
      * @var string
      *
      * @ORM\Column(name="email", type="string", length=255, nullable=true)
+     * @Assert\Email(checkMX=true)
      */
     private $email;
 
@@ -92,6 +98,7 @@ class Advert
      * @var string
      *
      * @ORM\Column(name="content", type="text",nullable=true)
+     * @Assert\NotBlank()
      */
     private $content;
 
@@ -102,8 +109,15 @@ class Advert
     private $published;
 
     /**
+     *
+     * @ORM\Column(name="delete_image", type="boolean")
+     */
+    private $deleteImage;
+
+    /**
      * @ORM\OneToOne(targetEntity="OC\PlatformBundle\Entity\Image", cascade={"persist","remove"}, inversedBy="advert")
      * @ORM\JoinColumn(nullable=true)
+     * @Assert\Valid()
      */
     private $image;
 
@@ -115,9 +129,19 @@ class Advert
         $this->categories = new ArrayCollection();
         $this->applications = new ArrayCollection();
         $this->skills = new ArrayCollection();
-        $this->nbApplications = 0;  
+        $this->nbApplications = 0;
+        $this->deleteImage = false;
     }
 
+    public function setDeleteImage($deleteImage)
+    {
+        $this->deleteImage = $deleteImage;
+    }
+
+    public function getDeleteImage()
+    {
+        return $this->deleteImage;
+    }
 
     public function increaseApplication()
     {
@@ -494,4 +518,28 @@ class Advert
     {
         return $this->image;
     }
+
+    /**
+     * @Assert\Callback
+     */
+    public function isContentValid(ExecutionContextInterface $context)
+    {
+        $forbiddenWords = array(
+            'connards',
+            'connard',
+            'enculé',
+            'enculés'
+        );
+
+        // On vérifie que le contenu ne contient pas l'un des mots
+        if (preg_match('#'.implode('|', $forbiddenWords).'#', $this->getContent())) {
+          // La règle est violée, on définit l'erreur
+          $context
+            ->buildViolation('Contenu invalide, grossier personnage...') // message
+            ->atPath('content')                                                   // attribut de l'objet qui est violé
+            ->addViolation() // ceci déclenche l'erreur, ne l'oubliez pas
+          ;
+        }
+    }
+
 }

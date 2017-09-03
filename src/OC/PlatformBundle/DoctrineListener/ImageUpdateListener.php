@@ -19,26 +19,22 @@ class ImageUpdateListener
     $this->container = $container;
   }
 
-  public function postUpdate(LifecycleEventArgs $args)
+  public function preUpdate(LifecycleEventArgs $args)
   {
+    
     $entity = $args->getObject();
 
     if (!$entity instanceof Image) {
       return;
     }
 
+    if ($entity->advert->getDeleteImage())
+      return;
+
     $liipCacheManager = $this->container->get('liip_imagine.cache.manager');
 
-    if ($entity->getPreviewName() != null) {
-      $liipCacheManager->remove('uploads/images/adverts/'.$entity->getPreviewName());
-    }
-
-    $em = $this->container->get('doctrine.orm.entity_manager');
-
-    if ($entity->getImageSize() == 0) {
-      $entity->getAdvert()->setImage();
-      $em->remove($entity);
-      $em->flush();
+    if ($entity->oldFile != null) {
+      $liipCacheManager->remove($entity->oldFile);
     }
 
   }
@@ -53,8 +49,8 @@ class ImageUpdateListener
 
     $liipCacheManager = $this->container->get('liip_imagine.cache.manager');
 
-    if ($entity->getImageName() != null) {
-      $liipCacheManager->remove('uploads/images/adverts/'.$entity->getImageName());
+    if ($entity->getPath() != null) {
+      $liipCacheManager->remove($entity->getPath());
     }
 
   }

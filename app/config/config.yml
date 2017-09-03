@@ -91,20 +91,6 @@ knp_paginator:
         pagination: 'KnpPaginatorBundle:Pagination:twitter_bootstrap_v3_pagination.html.twig'     # sliding pagination controls template
         sortable: 'KnpPaginatorBundle:Pagination:sortable_link.html.twig' # sort link template
 
-vich_uploader:
-    db_driver: orm
-
-    mappings:
-        advert_image:
-            uri_prefix:         uploads/images/adverts
-            # uri_prefix:         http://localhost/symfony/web/uploads/images/adverts
-            upload_destination: %kernel.root_dir%/../web/uploads/images/adverts
-            namer:              vich_uploader.namer_uniqid
-
-            inject_on_load:     false
-            delete_on_update:   true
-            delete_on_remove:   true
-
 liip_imagine :
 
     # configure resolvers
@@ -126,15 +112,20 @@ liip_imagine :
         my_thumb :
 
             # adjust the image quality to 75%
-            quality : 100
+            quality : 75
 
             # list of transformations to apply (the "filters")
             filters :
 
                 # create a thumbnail: set size to 120x90 and use the "outbound" mode
                 # to crop the image when the size ratio of the input differs
-                thumbnail  : { size : [300, ], mode : outbound }
+                thumbnail  : { size : [100, ], mode : outbound }
 
                 # create a 2px black border: center the thumbnail on a black background
                 # 4px larger to create a 2px border around the final image
                 # background : { size : [124, 94], position : center, color : '#ffffff' }
+
+        image_advert :
+            quality: 75
+            filters :
+                thumbnail  : { size : [400, ], mode : outbound }

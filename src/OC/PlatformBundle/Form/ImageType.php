@@ -5,7 +5,7 @@ namespace OC\PlatformBundle\Form;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use Vich\UploaderBundle\Form\Type\VichFileType;
+use Symfony\Component\Form\Extension\Core\Type\FileType;
 
 class ImageType extends AbstractType
 {
@@ -15,14 +15,11 @@ class ImageType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-        ->add('imageFile', VichFileType::class, [
-            'label'          => 'Choisissez votre image :',
-            'required'       => false,
-            'allow_delete'   => true, 
-            'download_uri'   => '...',
-            'download_label' => '...',
-            'delete_label' => "Pas d'image",
-        ]);
+            ->add('imageFile',FileType::class, array(
+                'required' => false,
+                'label' => 'Choisissez une image :'
+                ))
+        ;
     }
     
     /**

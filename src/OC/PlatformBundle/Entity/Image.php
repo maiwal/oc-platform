@@ -3,15 +3,17 @@
 namespace OC\PlatformBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
+
 use Symfony\Component\HttpFoundation\File\File;
-use Vich\UploaderBundle\Mapping\Annotation as Vich;
+use Symfony\Component\Validator\Context\ExecutionContextInterface;
 
 /**
  * Image
  *
  * @ORM\Table(name="oc_image")
  * @ORM\Entity(repositoryClass="OC\PlatformBundle\Repository\ImageRepository")
- * @Vich\Uploadable
+ * @ORM\HasLifecycleCallbacks()
  */
 class Image
 {
@@ -30,16 +32,15 @@ class Image
     private $advert;
 
     /**
-     * NOTE: This is not a mapped field of entity metadata, just a simple property.
-     * 
-     * @Vich\UploadableField(mapping="advert_image", fileNameProperty="imageName", size="imageSize")
-     * 
-     * @var File
+     * @Assert\File(
+     *     maxSize = "1024k",
+     *     mimeTypes = {"image/jpeg", "image/png"},
+     * )
      */
     private $imageFile;
 
     /**
-     * @ORM\Column(type="string", length=255)
+     * @ORM\Column(type="string", length=255, nullable=true)
      *
      * @var string
      */
@@ -50,14 +51,7 @@ class Image
      *
      * @var string
      */
-    private $previewName;
-
-    /**
-     * @ORM\Column(type="integer")
-     *
-     * @var integer
-     */
-    private $imageSize;
+    private $path;
 
     /**
      * @ORM\Column(type="datetime")
@@ -66,26 +60,75 @@ class Image
      */
     private $updatedAt;
 
+    public function getUploadRootDir()
+    {
+        return __dir__.'/../../../../web/uploads/images';
+    }
+
+    public function getAbsolutePath()
+    {
+        return null === $this->path ? null : $this->getUploadRootDir().'/'.$this->path;
+    }
+
     /**
-     * If manually uploading a file (i.e. not using Symfony Form) ensure an instance
-     * of 'UploadedFile' is injected into this setter to trigger the  update. If this
-     * bundle's configuration parameter 'inject_on_load' is set to 'true' this setter
-     * must be able to accept an instance of 'File' as the bundle will inject one here
-     * during Doctrine hydration.
-     *
-     * @param File|\Symfony\Component\HttpFoundation\File\UploadedFile $image
-     *
-     * @return Product
+     * @ORM\PrePersist()
+     * @ORM\PreUpdate()
      */
+    public function preUpload()
+    {
+
+        $this->tempFile = $this->getAbsolutePath();
+        $this->oldFile = $this->getPath();
+
+        if ($this->imageFile !== null)
+            $this->path = sha1(uniqid(mt_rand(),true)).'.'.$this->imageFile->guessExtension();
+    }
+
+    /**
+     * @ORM\PostPersist()
+     * @ORM\PostUpdate()
+     */
+    public function upload()
+    {
+
+        if ($this->imageFile !== null) {
+
+            $this->imageFile->move($this->getUploadRootDir(),$this->path);
+            unset($this->imageFile);
+
+            if ($this->oldFile !== null && $this->tempFile !== null)
+                unlink($this->tempFile);
+        }
+    }
+
+    /**
+     * @ORM\PreRemove()
+     */
+    public function preRemoveUpload()
+    {
+        $this->tempFile = $this->getAbsolutePath();
+    }
+
+    /**
+     * @ORM\PostRemove()
+     */
+    public function removeUpload()
+    {
+        if (file_exists($this->tempFile))
+            unlink($this->tempFile);
+    }
+
+    public function getPath()
+    {
+        return 'uploads/images/'.$this->path;
+    }
+
     public function setImageFile(File $image = null)
     {
         $this->imageFile = $image;
 
-        if ($image) {
-            // It is required that at least one field changes if you are using doctrine
-            // otherwise the event listeners won't be called and the file is lost
+        if ($image)
             $this->updatedAt = new \DateTimeImmutable();
-        }
         
         return $this;
     }
@@ -117,37 +160,6 @@ class Image
     {
         return $this->imageName;
     }
-
-    public function setPreviewName()
-    {
-        $this->previewName = $this->imageName;
-    }
-
-    public function getPreviewName()
-    {
-        return $this->previewName;
-    }
-    
-    /**
-     * @param integer $imageSize
-     *
-     * @return Product
-     */
-    public function setImageSize($imageSize)
-    {
-        $this->imageSize = $imageSize;
-        
-        return $this;
-    }
-
-    /**
-     * @return integer|null
-     */
-    public function getImageSize()
-    {
-        return $this->imageSize;
-    }
-
 
     /**
      * Get id
@@ -207,4 +219,5 @@ class Image
     {
         return $this->advert;
     }
+
 }
