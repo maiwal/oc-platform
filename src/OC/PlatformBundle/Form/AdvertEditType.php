@@ -8,12 +8,13 @@ use Symfony\Component\Form\FormBuilderInterface;
 class AdvertEditType extends AbstractType
 {
     /**
-     * {@inheritdoc}
-     */
+    * {@inheritdoc}
+    */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
 
         $builder->remove('date');
+
     }
 
     public function getParent()

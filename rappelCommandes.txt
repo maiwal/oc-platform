@@ -24,7 +24,15 @@ php bin/console doctrine:generate:form OCPlatformBundle:Advert
 
 /*******************************/
 
-../composer.phar update
-../composer.phar install
+php ../composer.phar update
+php ../composer.phar install
+
+/*******************************/
+
+php bin/console fos:user:create
+
+/*******************************/
+
+php bin/console debug:router
 
 /*******************************/

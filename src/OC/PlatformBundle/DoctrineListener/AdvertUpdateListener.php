@@ -9,31 +9,33 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 
 class AdvertUpdateListener
 {
-  /**
-   * @var \ContainerInterface
-   */
-  protected $container;
 
-  public function __construct(ContainerInterface $container)
-  {
-    $this->container = $container;
-  }
+    /**
+    * @var \ContainerInterface
+    */
+    protected $container;
 
-  public function preUpdate(LifecycleEventArgs $args)
-  {
-    $entity = $args->getObject();
+    public function __construct(ContainerInterface $container)
+    {
 
-    if (!$entity instanceof Advert) {
-      return;
+        $this->container = $container;
+
     }
 
-    if ($entity->getDeleteImage() && $entity->getImage() !== null) {
-      $em = $this->container->get('doctrine.orm.entity_manager');
-      $em->remove($entity->getImage());
-      $entity->setImage();
-      $entity->setDeleteImage(false);
-    }
+    public function preUpdate(LifecycleEventArgs $args)
+    {
 
-  }
+        $entity = $args->getObject();
+
+        if (!$entity instanceof Advert)
+            return;
+
+        if ($entity->getDeleteImage()) {
+            
+            $em = $this->container->get('doctrine.orm.entity_manager');
+            $em->remove($entity->oldFile);
+        }
+
+    }
 
 }

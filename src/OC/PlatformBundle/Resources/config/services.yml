@@ -1,5 +1,4 @@
 services:
-  
     oc_platform.email.application_mailer:
         class: OC\PlatformBundle\Email\ApplicationMailer
         arguments:
@@ -27,7 +26,7 @@ services:
         tags:
             - { name: doctrine.event_listener, event: preUpdate }
             # - { name: doctrine.event_listener, event: preRemove }
-
+            
     oc_platform.purger.advert:
         class: OC\PlatformBundle\Purger\AdvertPurger
         arguments:

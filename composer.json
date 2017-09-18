@@ -24,7 +24,7 @@
         "codeguy/upload": "^1.3",
         "doctrine/doctrine-bundle": "^1.6",
         "doctrine/doctrine-fixtures-bundle": "~2.3",
-        "doctrine/orm": "^2.5",
+        "doctrine/orm": "^2.4",
         "incenteev/composer-parameter-handler": "^2.0",
         "knplabs/knp-paginator-bundle": "^2.6",
         "liip/imagine-bundle": "1.8.0",
@@ -35,7 +35,8 @@
         "symfony/polyfill-apcu": "^1.0",
         "symfony/swiftmailer-bundle": "^2.3.10",
         "symfony/symfony": "3.3.*",
-        "twig/twig": "^1.0||^1.3"
+        "twig/twig": "^1.0||^1.3",
+        "friendsofsymfony/user-bundle": "2.0.1"
     },
     "require-dev": {
         "sensio/generator-bundle": "^3.0",

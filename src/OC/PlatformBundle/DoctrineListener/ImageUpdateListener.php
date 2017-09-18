@@ -4,55 +4,54 @@
 namespace OC\PlatformBundle\DoctrineListener;
 
 use Doctrine\Common\Persistence\Event\LifecycleEventArgs;
-use OC\PlatformBundle\Entity\Image;
 use Symfony\Component\DependencyInjection\ContainerInterface;
+use OC\PlatformBundle\Entity\Image;
 
 class ImageUpdateListener
 {
-  /**
-   * @var \ContainerInterface
-   */
-  protected $container;
+    /**
+    * @var \ContainerInterface
+    */
+    protected $container;
 
-  public function __construct(ContainerInterface $container)
-  {
-    $this->container = $container;
-  }
+    public function __construct(ContainerInterface $container)
+    {
 
-  public function preUpdate(LifecycleEventArgs $args)
-  {
-    
-    $entity = $args->getObject();
+        $this->container = $container;
 
-    if (!$entity instanceof Image) {
-      return;
     }
 
-    if ($entity->advert->getDeleteImage())
-      return;
+    public function preUpdate(LifecycleEventArgs $args)
+    {
 
-    $liipCacheManager = $this->container->get('liip_imagine.cache.manager');
+        $entity = $args->getObject();
 
-    if ($entity->oldFile != null) {
-      $liipCacheManager->remove($entity->oldFile);
+        if (!$entity instanceof Image)
+            return;
+
+        if ($entity->getAdvert()->getDeleteImage())
+            return;
+
+        $liipCacheManager = $this->container->get('liip_imagine.cache.manager');
+
+        if ($entity->oldFile != null)
+            $liipCacheManager->remove($entity->oldFile);
+
     }
 
-  }
+    public function preRemove(LifecycleEventArgs $args)
+    {
 
-  public function preRemove(LifecycleEventArgs $args)
-  {
-    $entity = $args->getObject();
+        $entity = $args->getObject();
 
-    if (!$entity instanceof Image) {
-      return;
+        if (!$entity instanceof Image)
+            return;
+
+        $liipCacheManager = $this->container->get('liip_imagine.cache.manager');
+
+        if ($entity->getRelativePath() != null)
+            $liipCacheManager->remove($entity->getRelativePath());
+
     }
-
-    $liipCacheManager = $this->container->get('liip_imagine.cache.manager');
-
-    if ($entity->getPath() != null) {
-      $liipCacheManager->remove($entity->getPath());
-    }
-
-  }
 
 }

@@ -16,48 +16,47 @@ class AdvertRepository extends EntityRepository
 
 	public function getAdverts()
 	{
-		$query = $this->createQueryBuilder('a')
-		    ->leftJoin('a.categories', 'c')
-		    ->addSelect('c')
-		    ->orderBy('a.id', 'DESC')
-      		->getQuery()
-		;
 
-	    return $query;
+		return $this->createQueryBuilder('a')
+	    ->leftJoin('a.categories', 'c')
+	    ->addSelect('c')
+	    ->orderBy('a.date', 'DESC')
+    	->getQuery()
+		;
 	}
 
 	public function getAdvert($id)
 	{
-		$query = $this->createQueryBuilder('a')
-		    ->where('a.id = :id')
-		    ->setParameter('id', $id)
-		    ->leftJoin('a.categories', 'c')
-		    ->addSelect('c')
-		    ->leftJoin('a.applications', 'app')
-		    ->addSelect('app')
-		    ->leftJoin('a.skills', 's')
-		    ->addSelect('s')
-		    ->leftJoin('s.skill', 'skill')
-		    ->addSelect('skill')
-		    ->leftJoin('a.image', 'i')
-		    ->addSelect('i')
-      		->getQuery()
-		;
 
-	    return $query->getOneOrNullResult();
+		return $this->createQueryBuilder('a')
+	    ->where('a.id = :id')
+	    ->setParameter('id', $id)
+	    ->leftJoin('a.categories', 'c')
+	    ->addSelect('c')
+	    ->leftJoin('a.applications', 'app')
+	    ->addSelect('app')
+	    ->leftJoin('a.skills', 's')
+	    ->addSelect('s')
+	    ->leftJoin('s.skill', 'skill')
+	    ->addSelect('skill')
+	    ->leftJoin('a.image', 'i')
+	    ->addSelect('i')
+    	->getQuery()
+    	->getOneOrNullResult()
+		;
 	}
 
-	public function getAdvertToPurge($days)
+	public function getAdvertToPurge($date)
 	{
+
 		return $this->createQueryBuilder('a')
 			->where('a.updatedAt < :last')
-			->orWhere('a.updatedAt IS NULL AND a.date <= :last') 										 // Si la date de modification est vide, on vérifie la date de création
+			->orWhere('a.updatedAt IS NULL AND a.date <= :last') // Si la date de modification est vide, on vérifie la date de création
 			->andWhere('a.applications is empty')
-			->setParameter('last', new \DateTime('-'.$days.' day'), \Doctrine\DBAL\Types\Type::DATETIME) // récupère toutes les annonces dont la date de modification est plus vieille que X jours
+			->setParameter('last', $date) // récupère toutes les annonces dont la date de modification est plus vieille que X jours
 			->getQuery()
 			->getResult()
 		;
-
 	}
 
 }

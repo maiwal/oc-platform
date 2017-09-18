@@ -1,117 +1,113 @@
 {# OC/CoreBundle/Resources/views/layout.html.twig #}
 
 <!DOCTYPE html>
+
 <html>
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
 
-  <title>{% block title %}OC Plateforme{% endblock %}</title>
+    <head>
 
-  {% block stylesheets %}
-    {# On charge le CSS de bootstrap depuis le site directement #}
-    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
-  {% endblock %}
+        <meta charset="utf-8">
 
-  {% block head %}
+        <meta name="viewport" content="width=device-width, initial-scale=1">
 
-  {% endblock %}
-  
-</head>
+        <title>
+            {% block title %}OC Plateforme{% endblock %}
+        </title>
 
-<body>
-  <div class="container">
-    <div id="header" class="jumbotron">
-      <h1>{% block headerTitle %}Application test{% endblock %}</h1>
-      <p>
-        Ce projet est propulsé par Symfony
-        et construit grâce au MOOC OpenClassrooms et SensioLabs.
-      </p>
-      <p>
-        <a class="btn btn-primary btn-lg" href="https://openclassrooms.com/courses/developpez-votre-site-web-avec-le-framework-symfony2">
-          Participer au MOOC »
-        </a>
-      </p>
-    </div>
+        {% block stylesheets %}
 
-    <div class="row">
+            {# On charge le CSS de bootstrap depuis le site directement #}
+            <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
 
-      <div id="menu" class="col-md-3">
-
-        <h3>Menu Principal</h3>
-        <ul class="nav nav-pills nav-stacked">
-          <li><a href="{{ path('core_homepage') }}">Accueil</a></li>
-          <li><a href="{{ path('oc_platform_home') }}">Platforme d'annonces</a></li>
-          <li><a href="{{ path('core_contactpage') }}">Contact</a></li>
-        </ul>
-
-        {% block sidebar %}
         {% endblock %}
 
-      </div>
-
-      <div id="content" class="col-md-9">
-
-        {% for message in app.session.flashbag.get('info') %}
-          
-          <div class="alert alert-info fade in">
-
-            <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
-            <strong>Info :</strong> {{ message }}
-
-          </div>
-
-        {% endfor %}
-
-        {% for message in app.session.flashbag.get('success') %}
-          
-          <div class="alert alert-success fade in">
-
-            <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
-            <strong>Succès :</strong> {{ message }}
-
-          </div>
-
-        {% endfor %}
-
-        {% for message in app.session.flashbag.get('warning') %}
-          
-          <div class="alert alert-warning fade in">
-
-            <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
-            <strong>Attention :</strong> {{ message }}
-
-          </div>
-
-        {% endfor %}
-
-        {% for message in app.session.flashbag.get('danger') %}
-          
-          <div class="alert alert-danger fade in">
-
-            <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
-            <strong>Danger :</strong> {{ message }}
-
-          </div>
-
-        {% endfor %}
-
-        {% block body %}
+        {% block head %}
         {% endblock %}
-      </div>
 
-    </div>
+    </head>
 
-    <hr>
+    <body>
 
-    <footer>
-      <p>The sky's the limit © {{ 'now'|date('Y') }} and beyond.</p>
-    </footer>
-  </div>
+        <div class="container">
 
-  {% block javascripts %}
-    
-  {% endblock %}
+            <div id="header" class="jumbotron">
 
-</body>
+                <h1>
+                    {% block headerTitle %}
+                        Apprentissage Symfony
+                    {% endblock %}
+                </h1>
+
+                <p>
+                    Ce projet est propulsé par Symfony
+                    et construit grâce au MOOC OpenClassrooms et SensioLabs.
+                </p>
+
+                <p>
+                    <a class="btn btn-primary btn-lg" href="https://openclassrooms.com/courses/developpez-votre-site-web-avec-le-framework-symfony2">
+                        Participer au MOOC »
+                    </a>
+                </p>
+
+            </div>
+
+            <div style="padding:0 0 15px 15px;">
+
+                 <div>
+                    {% if is_granted("IS_AUTHENTICATED_REMEMBERED") %}
+                        {{ 'layout.logged_in_as'|trans({'%username%': app.user.username}, 'FOSUserBundle') }} | 
+                        <a href="{{ path('fos_user_profile_show') }}">
+                            Votre profil
+                        </a> | 
+                        <a href="{{ path('fos_user_security_logout') }}">
+                            {{ 'layout.logout'|trans({}, 'FOSUserBundle') }}
+                        </a>
+                    {% else %}
+                        <a href="{{ path('fos_user_security_login') }}">{{ 'layout.login'|trans({}, 'FOSUserBundle') }}</a>
+                    {% endif %}
+                </div>    
+
+            </div>
+
+            <div class="row">
+
+                <div id="menu" class="col-md-3">
+
+                    <h3>Menu Principal</h3>
+
+                    <ul class="nav nav-pills nav-stacked">
+                        <li><a href="{{ path('core_homepage') }}">Accueil</a></li>
+                        <li><a href="{{ path('oc_platform_home') }}">Platforme d'annonces</a></li>
+                        <li><a href="{{ path('core_contactpage') }}">Contact</a></li>
+                    </ul>
+
+                    {% block sidebar %}
+                    {% endblock %}
+
+                </div>
+
+                <div id="content" class="col-md-9">
+
+                    {% include 'OCCoreBundle:Core:flashmessage.html.twig' %}
+
+                    {% block body %}
+                    {% endblock %}
+                  
+                </div>
+
+            </div>
+
+            <hr>
+
+            <footer>
+                <p>The sky's the limit © {{ 'now'|date('Y') }} and beyond.</p>
+            </footer>
+
+        </div>
+
+        {% block javascripts %}
+        {% endblock %}
+
+    </body>
+
 </html>

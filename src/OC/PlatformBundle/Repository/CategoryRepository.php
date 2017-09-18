@@ -13,20 +13,23 @@ class CategoryRepository extends \Doctrine\ORM\EntityRepository
 
 	public function getLikeQueryBuilder($pattern)
 	{
+		
 		return $this
-		  ->createQueryBuilder('c')
-		  ->where('c.name LIKE :pattern')
-		  ->setParameter('pattern', $pattern)
+			->createQueryBuilder('c')
+			->where('c.name LIKE :pattern')
+			->setParameter('pattern', $pattern)
 		;
+
 	}
 
 	public function getCategories()
 	{
-		$query = $this->createQueryBuilder('c')
+		
+		return $this->createQueryBuilder('c')
 		    ->orderBy('c.id', 'DESC')
-      		->getQuery()
+	    	->getQuery()
 		;
 
-	    return $query;
 	}
+
 }

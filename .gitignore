@@ -18,3 +18,4 @@
 /web/media/*
 /web/uploads/*
 /symfony.phar
+/nbproject/private/

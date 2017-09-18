@@ -12,18 +12,18 @@ class CoreController extends Controller
     {
 
         return $this->render('OCCoreBundle:Core:index.html.twig');
-    }
+        }
 
-    public function contactAction(Request $request)
-    {
+        public function contactAction(Request $request)
+        {
 
         $request->getSession()->getFlashBag()->add(
-          'info',
-          "La page de contact n'est pas encore disponible."
+            'info',
+            "La page de contact n'est pas encore disponible."
         );
 
         return $this->redirectToRoute('core_homepage');
         // return $this->render('CoreBundle:Core:contact.html.twig');
-        
+          
     }
 }

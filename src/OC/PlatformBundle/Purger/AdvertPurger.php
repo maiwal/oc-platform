@@ -20,15 +20,34 @@ class AdvertPurger
 
 	public function purge($days)
 	{
+		
+    	$date = new \DateTime('-'.$days.' day');
+
 		$listAdvertsToPurge = $this->em
 			->getRepository('OCPlatformBundle:Advert')
-	        ->getAdvertToPurge($days)
-	    ;
+	    	->getAdvertToPurge($date)
+	  	;
 
-	    foreach ($listAdvertsToPurge as $advertToPurge) {
+	    foreach ($listAdvertsToPurge as $advertToPurge)
 	    	$this->em->remove($advertToPurge);
-	    }
 
 	    return $this->em->flush();
+
 	}
+
+	public function purgeTotale()
+	{
+
+		$listAdvertsToPurge = $this->em
+			->getRepository('OCPlatformBundle:Advert')
+	    	->findAll()
+	  	;
+
+	    foreach ($listAdvertsToPurge as $advertToPurge)
+	    	$this->em->remove($advertToPurge);
+
+	    return $this->em->flush();
+
+	}
+
 }

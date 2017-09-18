@@ -1,0 +1,58 @@
+{% trans_default_domain 'FOSUserBundle' %}
+
+{% if error %}
+    <div class="alert alert-danger fade in">
+        <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+        {{ error.messageKey|trans(error.messageData, 'security') }}
+    </div>
+{% endif %}
+
+<form action="{{ path('fos_user_security_check') }}" method="post" class="form-signin">
+
+    {% if csrf_token %}
+        <input type="hidden" name="_csrf_token" value="{{ csrf_token }}" />
+    {% endif %}
+
+    <h2 class="form-signin-heading">Authentification</h2>
+
+    <br/>
+
+    <label for="username" class="sr-only">
+        {{ 'security.login.username'|trans }}
+    </label>
+
+    <input type="text" id="username" name="_username" class="form-control" value="{{ last_username }}" placeholder="{{ 'security.login.username'|trans }}"  autofocus required="required" />
+
+    {# <input type="email" id="inputEmail" class="form-control" placeholder="Email address"  autofocus> #}
+
+    <label for="password" class="sr-only">
+        {{ 'security.login.password'|trans }}
+    </label>
+
+    <input type="password" id="password" name="_password" class="form-control" placeholder="{{ 'security.login.password'|trans }}"/>
+
+    <div class="checkbox">
+        <label for="remember_me">
+            <input type="checkbox" id="remember_me" name="_remember_me" value="on">
+            {{ 'security.login.remember_me'|trans }}
+        </label>
+    </div>
+
+    <a href="{{ path('fos_user_resetting_request') }}">
+        J'ai oublié mon mot de passe
+    </a>
+
+    <br/>
+
+    <a href="{{ path('fos_user_registration_register') }}">
+        M'enregistrer
+    </a>
+
+    <br/>
+    <br/>
+
+    <button class="btn btn-lg btn-primary btn-block" type="submit" id="_submit" name="_submit">
+        {{ 'security.login.submit'|trans }}
+    </button>
+
+</form>
