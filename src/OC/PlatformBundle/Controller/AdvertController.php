@@ -14,12 +14,16 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use OC\PlatformBundle\Entity\Advert;
 use OC\PlatformBundle\Form\AdvertType;
 use OC\PlatformBundle\Form\AdvertEditType;
+use OC\PlatformBundle\Event\PlatformEvents;
+use OC\PlatformBundle\Event\MessagePostEvent;
 
 class AdvertController extends Controller
 {
 
     public function indexAction($page)
     {
+        // $userManager = $this->get('fos_user.user_manager');
+        // $userManager->deleteUser($this->get('security.token_storage')->getToken()->getUser());
 
         if ($page == '') $page = 1;
 
@@ -77,6 +81,7 @@ class AdvertController extends Controller
     {
 
         $advert = new Advert();
+        $advert->setUser($this->get('security.token_storage')->getToken()->getUser());
 
         $form = $this->createForm(AdvertType::class, $advert);
 
@@ -85,6 +90,15 @@ class AdvertController extends Controller
             $form->handleRequest($request);
 
             if ($form->isValid()) {
+
+                // On crée l'évènement avec ses 2 arguments
+                $event = new MessagePostEvent($advert->getContent(), $advert->getUser());
+
+                // On déclenche l'évènement
+                $this->get('event_dispatcher')->dispatch(PlatformEvents::POST_MESSAGE, $event);
+
+                // On récupère ce qui a été modifié par le ou les listeners, ici le message
+                $advert->setContent($event->getMessage());
 
                 $em = $this->getDoctrine()->getManager();
                 $em->persist($advert);
@@ -237,20 +251,41 @@ class AdvertController extends Controller
 
     }
 
-public function purgeTotaleAction(Request $request)
-{
+    public function purgeTotaleAction(Request $request)
+    {
 
-    $this->get('oc_platform.purger.advert')->purgeTotale();
+        // On crée un formulaire vide, qui ne contiendra que le champ CSRF
+        // Cela permet de protéger la suppression d'annonce contre cette faille
+        $form = $this->get('form.factory')->create();
 
-    $request
-        ->getSession()
-        ->getFlashBag()
-        ->add('success',"La purge totale bien été effectué sur les annonces")
-    ;
+        if ($request->isMethod('POST') && $form->handleRequest($request)->isValid()) {
 
-    return $this->redirectToRoute('oc_platform_home');
+            $this->get('oc_platform.purger.advert')->purgeTotale();
 
-}
+            $request
+                ->getSession()
+                ->getFlashBag()
+                ->add('success',"La purge totale bien été effectué sur les annonces.")
+            ;
+
+            return $this->redirectToRoute('oc_platform_home');
+        }
+
+        return $this->render('OCPlatformBundle:Advert:purgetotale.html.twig', array(
+            'form'   => $form->createView(),
+        ));
+
+        // $this->get('oc_platform.purger.advert')->purgeTotale();
+
+        // $request
+        //     ->getSession()
+        //     ->getFlashBag()
+        //     ->add('success',"La purge totale bien été effectué sur les annonces")
+        // ;
+
+        // return $this->redirectToRoute('oc_platform_home');
+
+    }
 
     public function categoriesAction($page)
     {

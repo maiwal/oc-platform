@@ -14,7 +14,7 @@ class LoadUser implements FixtureInterface
     {
 
         // Les noms d'utilisateurs à créer
-        $listNames = array('Alexandre', 'Marine', 'Anna');
+       /* $listNames = array('Alexandre', 'Marine', 'Anna');
 
         foreach ($listNames as $name) {
             
@@ -35,7 +35,7 @@ class LoadUser implements FixtureInterface
         }
 
         // On déclenche l'enregistrement
-        $manager->flush();
+        $manager->flush();*/
 
     }
 

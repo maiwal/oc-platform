@@ -14,14 +14,13 @@ use Doctrine\ORM\EntityRepository;
 class AdvertRepository extends EntityRepository
 {
 
+	// comme findAll mais ne retourne pas un résultat, mais une requète
 	public function getAdverts()
 	{
 
 		return $this->createQueryBuilder('a')
-	    ->leftJoin('a.categories', 'c')
-	    ->addSelect('c')
-	    ->orderBy('a.date', 'DESC')
-    	->getQuery()
+		    ->orderBy('a.date', 'DESC')
+	    	->getQuery()
 		;
 	}
 
@@ -33,6 +32,8 @@ class AdvertRepository extends EntityRepository
 	    ->setParameter('id', $id)
 	    ->leftJoin('a.categories', 'c')
 	    ->addSelect('c')
+	    ->leftJoin('a.user', 'u')
+	    ->addSelect('u')
 	    ->leftJoin('a.applications', 'app')
 	    ->addSelect('app')
 	    ->leftJoin('a.skills', 's')

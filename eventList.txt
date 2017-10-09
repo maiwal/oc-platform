@@ -1,0 +1,180 @@
+Liste complète des évènements avec les informations clés pour déterminer lequel écouter.
+
+*********************************
+
+Symfony\Component\EventDispatcher\Event, représentant l'évènement en cours.
+
+*********************************
+
+Symfony\Component\HttpKernel\Event\FilterResponseEvent
+
+class FilterResponseEvent
+{
+	public function getResponse();
+	public function setResponse(Response $response);
+	public function getKernel();
+	public function getRequest();
+	public function getRequestType();
+	public function isPropagationStopped();
+	public function stopPropagation();
+}
+
+*********************************
+
+L'évènementkernel.request
+
+Cet évènement est déclenché très tôt dans l'exécution d'une page, avant même que le choix du contrôleur à exécuter ne soit fait. Son objectif est de permettre à un listener de retourner immédiatement une réponse, sans même passer par l'exécution d'un contrôleur donc. Il est également possible de modifier la requête, en y rajoutant de attributs par exemple. Dans le cas où un listener définit une réponse, alors les listeners suivants ne seront pas exécutés ; on reparle de la priorité des listeners plus loin.
+
+La classe de l'évènement donné en argument par le gestionnaire d'évènements estGetResponseEvent, dont les méthodes sont les suivantes :
+
+class GetResponseEvent
+{
+	public function getResponse();
+	public function setResponse(Response $response);
+	public function hasResponse();
+	public function getKernel();
+	public function getRequest();
+	public function getRequestType();
+	public function isMasterRequest();
+	public function isPropagationStopped();
+	public function stopPropagation();
+}
+
+*********************************
+
+L'évènementkernel.controller
+
+Cet évènement est déclenché après que le contrôleur à exécuter ait été défini, mais avant de l'exécuter effectivement. Son objectif est de permettre à un listener de modifier le contrôleur à exécuter.
+
+Généralement, c'est l'évènement utilisé pour exécuter du code sur chaque page. En effet, l'évènement précédentkernel.request est déclenché avant qu'une route n'ait été trouvée : autrement dit, il est déclenché même lors d'une erreur 404 (page non trouvée).
+
+La classe de l'évènement donné en argument par le gestionnaire d'évènements estFilterControllerEvent, dont les méthodes sont les suivantes :
+
+class FilterControllerEvent
+{
+	public function getController();
+	public function setController($controller);
+	public function getKernel();
+	public function getRequest();
+	public function getRequestType();
+	public function isMasterRequest();
+	public function isPropagationStopped();
+	public function stopPropagation();
+}
+
+*********************************
+
+L'évènementkernel.view
+
+Cet évènement est déclenché lorsqu'un contrôleur n'a pas retourné d'objetResponse. Son objectif est de permettre à un listener d'attraper le retour du contrôleur (s'il y en a un) pour soit construire une réponse lui-même, soit personnaliser l'erreur levée.
+
+La classe de l'évènement donné en argument par le gestionnaire d'évènements estGetResponseForControllerResultEvent(rien que ça !), dont les méthodes sont les suivantes :
+
+class GetResponseForControllerResultEvent
+{
+	public function getControllerResult();
+	public function getResponse();
+	public function setResponse(Response $response);
+	public function hasResponse();
+	public function getKernel();
+	public function getRequest();
+	public function getRequestType();
+	public function isMasterRequest();
+	public function isPropagationStopped();
+	public function stopPropagation();
+}
+
+*********************************
+
+L'évènementkernel.response
+
+Cet évènement est déclenché après qu'un contrôleur a retourné un objetResponse; c'est celui que nous avons utilisé dans notre exempleBetaListener. Son objectif, comme vous avez pu vous en rendre compte, est de permettre à un listener de modifier la réponse générée par le contrôleur avant de l'envoyer à l'internaute.
+
+La classe de l'évènement donné en argument par le gestionnaire d'évènements estFilterResponseEvent, dont les méthodes sont les suivantes :
+
+class FilterResponseEvent
+{
+	public function getControllerResult();
+	public function getResponse();
+	public function setResponse(Response $response);
+	public function hasResponse();
+	public function getKernel();
+	public function getRequest();
+	public function getRequestType();
+	public function isMasterRequest();
+	public function isPropagationStopped();
+	public function stopPropagation();
+}
+
+*********************************
+
+L'évènementkernel.exception
+
+Cet évènement est déclenché lorsqu'une exception est levée. Son objectif est de permettre à un listener de modifier la réponse à renvoyer à l'internaute, ou bien de modifier l'exception.
+
+La classe de l'évènement donné en argument par le gestionnaire d'évènements estGetResponseForExceptionEvent, dont les méthodes sont les suivantes :
+
+class GetResponseForExceptionEvent
+{
+	public function getException();
+	public function setException(\Exception $exception);
+	public function getResponse();
+	public function setResponse(Response $response);
+	public function hasResponse();
+	public function getKernel();
+	public function getRequest();
+	public function getRequestType();
+	public function isMasterRequest();
+	public function isPropagationStopped();
+	public function stopPropagation();
+}
+
+********************************
+
+L'évènementsecurity.interactive_login
+
+Cet évènement est déclenché lorsqu'un utilisateur s'identifie via le formulaire de connexion. Son objectif est de permettre à un listener d'archiver une trace de l'identification, par exemple.
+
+La classe de l'évènement donné en argument par le gestionnaire d'évènements estSymfony\Component\Security\Http\Event\InteractiveLoginEvent, dont les méthodes sont les suivantes :
+
+class InteractiveLoginEvent
+{
+	public function getAuthenticationToken();
+	public function getRequest();
+	public function isPropagationStopped();
+	public function stopPropagation();
+}
+
+********************************
+
+L'évènementsecurity.authentication.success
+
+Cet évènement est déclenché lorsqu'un utilisateur s'identifie avec succès, quelque soit le moyen utilisé (formulaire de connexion, cookiesremember_me). Son objectif est de permettre à un listener d'archiver une trace de l'identification, par exemple.
+
+La classe de l'évènement donné en argument par le gestionnaire d'évènements estSymfony\Component\Security\Core\Event\AuthenticationEvent, dont les méthodes sont les suivantes :
+
+class AuthenticationEvent
+{
+	public function getAuthenticationToken();
+	public function getRequest();
+	public function isPropagationStopped();
+	public function stopPropagation();
+}
+
+********************************
+
+L'évènementsecurity.authentication.failure
+
+Cet évènement est déclenché lorsqu'un utilisateur effectue une tentative d'identification échouée, quelque soit le moyen utilisé (formulaire de connexion, cookiesremember_me). Son objectif est de permettre à un listener d'archiver une trace de la mauvaise identification, par exemple.
+
+La classe de l'évènement donné en argument par le gestionnaire d'évènements estSymfony\Component\Security\Core\Event\AuthenticationFailureEvent, dont les méthodes sont les suivantes :
+
+class AuthenticationFailureEvent
+{
+	public function getAuthenticationException();
+	public function getRequest();
+	public function isPropagationStopped();
+	public function stopPropagation();
+}
+
+*********************************

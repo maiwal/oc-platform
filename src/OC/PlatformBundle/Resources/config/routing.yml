@@ -14,19 +14,19 @@ oc_platform_view:
         id: \d+
 
 oc_platform_add:
-    path: /add
+    path: /ajouter-une-nouvelle-annonce
     defaults:   
         _controller: OCPlatformBundle:Advert:add
 
 oc_platform_edit:
-    path: /edit/{id}
+    path: /modifier/{id}
     defaults:   
         _controller: OCPlatformBundle:Advert:edit
     requirements:
         id: \d+
 
 oc_platform_delete:
-    path: /delete/{id}
+    path: /supprimer/{id}
     defaults:   
         _controller: OCPlatformBundle:Advert:delete
     requirements:

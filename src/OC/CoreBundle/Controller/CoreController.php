@@ -12,10 +12,10 @@ class CoreController extends Controller
     {
 
         return $this->render('OCCoreBundle:Core:index.html.twig');
-        }
+    }
 
-        public function contactAction(Request $request)
-        {
+    public function contactAction(Request $request)
+    {
 
         $request->getSession()->getFlashBag()->add(
             'info',

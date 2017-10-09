@@ -2,6 +2,7 @@
 
 composer require --dev doctrine/doctrine-fixtures-bundle
 php bin/console doctrine:fixtures:load
+php bin/console doctrine:fixtures:load --append
 
 /*******************************/
 
@@ -36,3 +37,12 @@ php bin/console fos:user:create
 php bin/console debug:router
 
 /*******************************/
+
+php bin/console debug:container --tag=twig.extension
+
+/*******************************/
+
+php bin/console assets:install web
+
+/*******************************/
+

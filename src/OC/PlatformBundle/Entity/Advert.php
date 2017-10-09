@@ -81,22 +81,6 @@ class Advert
     /**
     * @var string
     *
-    * @ORM\Column(name="author", type="string", length=255, nullable=true)
-    * @Assert\Length(min=2)
-    */
-    private $author;
-
-    /**
-    * @var string
-    *
-    * @ORM\Column(name="email", type="string", length=255, nullable=true)
-    * @Assert\Email(checkMX=true)
-    */
-    private $email;
-
-    /**
-    * @var string
-    *
     * @ORM\Column(name="content", type="text",nullable=true)
     * @Assert\NotBlank()
     */
@@ -117,6 +101,11 @@ class Advert
     */
     private $image;
 
+    /**
+    * @ORM\ManyToOne(targetEntity="OC\UserBundle\Entity\User", inversedBy="adverts")
+    * @ORM\JoinColumn(nullable=false)
+    */
+    private $user;
 
     public function __construct()
     {
@@ -127,6 +116,22 @@ class Advert
         $this->skills         = new ArrayCollection();
         $this->nbApplications = 0;
         $this->deleteImage    = false;
+    }
+
+    /**
+    * @ORM\PrePersist
+    */
+    public function increase()
+    {
+        $this->getUser()->increaseAdvert();
+    }
+
+    /**
+    * @ORM\PreRemove
+    */
+    public function decrease()
+    {
+        $this->getUser()->decreaseAdvert();
     }
 
     public function setDeleteImage($deleteImage)
@@ -156,7 +161,6 @@ class Advert
     {
         $this->setUpdatedAt(new \Datetime());
     }
-
 
     /**
     * Get id
@@ -212,29 +216,6 @@ class Advert
     public function getTitle()
     {
         return $this->title;
-    }
-
-    /**
-    * Set author
-    *
-    * @param string $author
-    *
-    * @return Advert
-    */
-    public function setAuthor($author)
-    {
-        $this->author = $author;
-        return $this;
-    }
-
-    /**
-    * Get author
-    *
-    * @return string
-    */
-    public function getAuthor()
-    {
-        return $this->author;
     }
 
     /**
@@ -398,29 +379,6 @@ class Advert
     }
 
     /**
-    * Set email
-    *
-    * @param string $email
-    *
-    * @return Advert
-    */
-    public function setEmail($email)
-    {
-        $this->email = $email;
-        return $this;
-    }
-
-    /**
-    * Get email
-    *
-    * @return string
-    */
-    public function getEmail()
-    {
-        return $this->email;
-    }
-
-    /**
     * Set slug
     *
     * @param string $slug
@@ -525,4 +483,27 @@ class Advert
 
     }
 
+    /**
+     * Set user
+     *
+     * @param \OC\UserBundle\Entity\User $user
+     *
+     * @return Advert
+     */
+    public function setUser(\OC\UserBundle\Entity\User $user)
+    {
+        $this->user = $user;
+
+        return $this;
+    }
+
+    /**
+     * Get user
+     *
+     * @return \OC\UserBundle\Entity\User
+     */
+    public function getUser()
+    {
+        return $this->user;
+    }
 }
