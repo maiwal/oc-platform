@@ -1,12 +1,12 @@
 {# src/OC/PlatformBundle/Resources/views/Advert/form.html.twig #}
 
-<h3>Formulaire d'annonce</h3>
+<h3>{{ 'oc.advert.form.h3title'|trans }}</h3>
 
 <div class="well">
 
 	{% if advert.image is not null and advert.image.path != '' %}
 
-		<img src="{{ advert.image.getRelativePath() | imagine_filter('my_thumb') }}" alt="Aperçu de l'image" />
+		<img src="{{ advert.image.getRelativePath() | imagine_filter('my_thumb') }}" alt="{{ 'oc.advert.form.altthumb'|trans }}" />
 
 		<br/>
 		<br/> 

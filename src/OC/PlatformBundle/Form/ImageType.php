@@ -19,7 +19,7 @@ class ImageType extends AbstractType
         $builder
             ->add('imageFile',FileType::class, array(
                 'required' => false,
-                'label'    => 'Choisissez une image :',
+                'label'    => 'oc.advert.form.label.selectimage',
             ))
         ;
 

@@ -22,8 +22,6 @@ class AdvertController extends Controller
 
     public function indexAction($page)
     {
-        // $userManager = $this->get('fos_user.user_manager');
-        // $userManager->deleteUser($this->get('security.token_storage')->getToken()->getUser());
 
         if ($page == '') $page = 1;
 

@@ -3,7 +3,7 @@
 {% extends "OCPlatformBundle::layout.html.twig" %}
 
 {% block title %}
-    Lecture d'une annonce - {{ parent() }}
+    {{ 'oc.advert.view.balisetitle'|trans }} - {{ parent() }}
 {% endblock %}
 
 {% block ocplatform_body %}
@@ -21,7 +21,7 @@
 
     <h2>{{ advert.title }}</h2>
 
-    <i>Par {{ advert.user.username }}, le {{ advert.date|date('d/m/Y') }}</i>
+    <i>{{ 'oc.advert.view.byanddate'|trans({'%author%': advert.user.username,'%date%': advert.date|date('d/m/Y')}) }}</i>
 
     <div class="well">
         {{ advert.content|purify }}
@@ -29,7 +29,7 @@
 
     {% if advert.applications is not empty %}
 
-        <h2>Liste des candidatures pour cette annonce</h2>
+        <h2>{{ 'oc.advert.view.h2title'|trans }}</h2>
 
         <ul>
 
@@ -39,9 +39,10 @@
 
                     {{ application.content }}
 
-                    par {{ application.author }},
+                    {{ 'oc.application.byanddate'|trans({'%author%': advert.user.username,'%date%': advert.date|date('d/m/Y')}) }}
+                   {#  par {{ application.author }},
 
-                    le {{ application.date|date('d/m/Y') }}
+                    le {{ application.date|date('d/m/Y') }} #}
 
                 </li>
 
@@ -58,7 +59,9 @@
 
         <p>
 
-            <b>Cette annonce est parue dans les catégories suivantes :</b>
+            <b>
+                {{ 'oc.advert.view.thisadvertisinthesecathegories'|trans }}
+            </b>
 
             <br/>
 
@@ -80,7 +83,11 @@
 
         <p>
 
-            <b>Cette annonce requière les compétences suivantes :</b><br/>
+            <b>
+                {{ 'oc.advert.view.thisadvertneedsskills'|trans }}
+            </b>
+
+            <br/>
 
             {% for advertSkill in advert.skills %}
 
@@ -102,17 +109,17 @@
         
         <a href="{{ path('oc_platform_home') }}" class="btn btn-default">
             <i class="glyphicon glyphicon-chevron-left"></i>
-            Retour à la liste
+            {{ 'oc.advert.view.button.backtolistadvert'|trans }}
         </a>
 
         <a href="{{ path('oc_platform_edit', {'id': advert.id}) }}" class="btn btn-default">
             <i class="glyphicon glyphicon-edit"></i>
-            Modifier l'annonce
+            {{ 'oc.advert.view.button.editthisadvert'|trans }}
         </a>
 
         <a href="{{ path('oc_platform_delete', {'id': advert.id}) }}" class="btn btn-danger">
             <i class="glyphicon glyphicon-trash"></i>
-            Supprimer l'annonce
+            {{ 'oc.advert.view.button.deletethisadvert'|trans }}
         </a>
 
     </p>

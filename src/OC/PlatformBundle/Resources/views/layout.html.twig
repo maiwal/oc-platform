@@ -2,20 +2,24 @@
 
 {% extends "OCCoreBundle::layout.html.twig" %}
 
-{% block title %}Annonces - {{ parent() }}{% endblock %}
+{% block title %}{{ 'oc.advert.maintitle'|trans }} - {{ parent() }}{% endblock %}
 
 {% block sidebar %}
 
-    <h4>Les annonces</h4>
+    <h4>{{ 'oc.advert.sidebar.title'|trans }}</h4>
 
     <ul class="nav nav-pills nav-stacked">
 
-        <li><a href="{{ path('oc_platform_home') }}">Toutes les annonces</a></li>
+        <li>
+            <a href="{{ path('oc_platform_home') }}">
+                {{ 'oc.advert.sidebar.button.seealladverts'|trans }}
+            </a>
+        </li>
 
         {% if is_granted('ROLE_USER') %}
             <li>
                 <a href="{{ path('oc_platform_add') }}">
-                    Ajouter une annonce
+                    {{ 'oc.advert.sidebar.button.addnewadvert'|trans }}
                 </a>
             </li>
         {% endif %}
@@ -23,12 +27,12 @@
         {% if is_granted('ROLE_ADMIN') %}
             <li>
                 <a href="{{ path('oc_platform_purge', {'days': 2}) }}">
-                    Purger les annonces de plus de 2 jours
+                    {{ 'oc.advert.sidebar.button.purge'|trans }}
                 </a>
             </li>
             <li>
                 <a href="{{ path('oc_platform_purge_totale') }}">
-                    Purger la totalité des annonces
+                    {{ 'oc.advert.sidebar.button.purgetotale'|trans }}
                 </a>
             </li>
         {% endif %}
@@ -37,12 +41,12 @@
 
     <br/>
 
-    <h4>Les catégories</h4>
+    <h4>{{ 'oc.category.sidebar.title'|trans }}</h4>
     
     <ul class="nav nav-pills nav-stacked">
         <li>
             <a href="{{ path('oc_platform_categories') }}">
-                Toutes les catégories
+                {{ 'oc.category.sidebar.button.seeallcathegories'|trans }}
             </a>
         </li>
     </ul>
@@ -56,7 +60,7 @@
 {% block body %}
 
     {# On définit un sous-titre commun à toutes les pages du bundle, par exemple #}
-    <h1>Annonces</h1>
+    <h1>{{ 'oc.advert.maintitle'|trans }}</h1>
 
     <hr>
 

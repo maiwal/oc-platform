@@ -1,0 +1,86 @@
+oc:
+    core:
+        balisetitle: OC Plateforme
+        headerTitle: Apprentissage Symfony
+        headersubTitle: >
+                Ce projet est propulsé par Symfony 
+                et construit grâce au MOOC OpenClassrooms et SensioLabs.
+        button:        
+            participate: Participer au MOOC »
+            yourprofile: Je veux voir mon profil
+        sidebar:
+            h3title: Menu Principal
+            button:
+                accesshome: Accueil
+                accessplatform: Platforme d'annonces
+                accesscontact: Contact
+        horlogephrase: >
+                Aujourd'hui nous sommes le %date%
+                et il est %heure%
+        footerphrase: Le ciel est la limite © %date% et au-delà.
+    advert:
+        maintitle: Annonces
+        sidebar:
+            title: Les annonces
+            button:
+                seealladverts: Voir toutes les annonces
+                addnewadvert: Ajouter une nouvelle annonce
+                purge: Purger les annonces dindexe + de 2 jours
+                purgetotale: Purger toutes les annonces
+        index:
+            balisetitle: Accueil
+            title: Liste des annonces
+            withimage: avec image
+            notyetadvert: Pas encore d'annonce
+            byanddate: Annonce publié par %author%, le %date%
+        form:
+            label:
+                selectimage: "Choisissez une image pour illustrer l'annonce :"
+                noimage: Pas d'image pour cette annonce.
+                creationdate: Date de création
+                title: Titre de votre annonce
+                content: Décrivez ici votre annonce
+                category: Selectionez une ou plusieurs catégories appartenant à l'annonce
+                published: Publier l'annonce
+                save: Enregister l'annonce
+            h3title: Formulaire d'annonce
+            altthumb: Aperçu de l'image
+        add:
+            balisetitle: Page de création d'une nouvelle annonce
+        delete:
+            balisetitle: Page de confirmation - Supprimer une annonce
+            h2title: Supprimer une annonce
+            areyousure: Etes-vous certain de vouloir supprimer l'annonce "%title%" ?
+            button:
+                backtoadvert: Retour à l'annonce
+                delete: Oui je confirme la suppression
+        edit:
+            balisetitle: Page de création d'une nouvelle annonce
+        purgetotale:
+            balisetitle: Purge totale - Confirmation
+            h2title: Confirmation purge totale des annonces
+            areyousure: Etes-vous certain de vouloir supprimer toutes les annonces ?
+            button:
+                cancel: Non surtout pas
+                confirm: Oui je sais ce que je fais
+        view:
+            balisetitle: Lecture d'une annonce
+            byanddate: Annonce publié par %author%, le %date%
+            h2title: Liste des candidatures pour cette annonce
+            thisadvertisinthesecathegories: "Cette annonce requière les compétences suivantes :"
+            thisadvertneedsskills: "Cette annonce requière les compétences suivantes :"
+            button:
+                backtolistadvert: Retour à la liste
+                editthisadvert: Modifier cette annonce
+                deletethisadvert: Supprimer cette annonce
+            
+    category:
+        balisetitle: Modifier une annonce
+        sidebar:
+            title: Les catégories
+            button:
+                seeallcathegories: Voir toutes les catégories
+    application:
+        byanddate: postulé par %author%, le %date%
+
+

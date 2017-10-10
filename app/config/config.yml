@@ -22,7 +22,6 @@ framework:
     #serializer: { enable_annotations: true }
     templating:
         engines: ['twig']
-    default_locale: '%locale%'
     trusted_hosts: ~
     session:
         # https://symfony.com/doc/current/reference/configuration/framework.html#handler-id
@@ -33,6 +32,7 @@ framework:
     assets: ~
     php_errors:
         log: true
+    default_locale: '%locale%'
     translator: { fallbacks: ["%locale%"] }
 
 # Twig Configuration
@@ -41,6 +41,13 @@ twig:
     strict_variables: '%kernel.debug%'
     form_themes:
         - 'bootstrap_3_layout.html.twig'
+
+# Activation de l'extension Twig intl
+services:
+    twig.extension.intl:
+        class: Twig_Extensions_Extension_Intl
+        tags:
+        - { name: twig.extension }
 
 # Doctrine Configuration
 doctrine:

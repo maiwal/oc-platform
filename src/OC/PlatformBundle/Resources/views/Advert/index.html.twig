@@ -3,12 +3,12 @@
 {% extends "OCPlatformBundle::layout.html.twig" %}
 
 {% block title %}
-    Accueil - {{ parent() }}
+    {{ 'oc.advert.index.balisetitle'|trans }} - {{ parent() }}
 {% endblock %}
 
 {% block ocplatform_body %}
 
-    <h2>Liste des annonces</h2>
+    <h2>{{ 'oc.advert.index.title'|trans }}</h2>
 
     <ul>
 
@@ -20,14 +20,16 @@
                     {{ advert.title }}
                 </a>
 
-                par {{ advert.user.username }},
-
-                le {{ advert.date|date('d/m/Y') }}
+                {{ 'oc.advert.index.byanddate'|trans({
+                        '%author%': advert.user.username,
+                        '%date%': advert.date|date('d/m/Y')
+                    })
+                }}
 
                 {% if advert.image is not null %}
 
                     <span style="color:orange">
-                        <b>(avec image)</b>
+                        <b>({{ 'oc.advert.index.withimage'|trans }})</b>
                     </span>
 
                 {% endif %}
@@ -36,7 +38,7 @@
 
         {% else %}
 
-            <li>Pas encore d'annonces</li>
+            <li>{{ 'oc.advert.index.notyetadvert'|trans }}</li>
 
         {% endfor %}
 

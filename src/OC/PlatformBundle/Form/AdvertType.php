@@ -37,30 +37,35 @@ class AdvertType extends AbstractType
             ))
             ->add('delete_image', CheckboxType::class, array(
                 'required' => false,
-                'label' => "Pas d'image pour cette annonce.",
+                'label' => "oc.advert.form.label.noimage",
                 // 'mapped'   => false
             ))
-            ->add('date',      DateTimeType::class)
-            ->add('title',     TextType::class)
-            // ->add('author',    TextType::class)
-            // ->add('email',    EmailType::class)
-            // ->add('content', TextareaType::class)
-            ->add('content', CkeditorType::class)
+            ->add('date',      DateTimeType::class, array(
+                'label' => "oc.advert.form.label.creationdate",
+            ))
+            ->add('title',     TextType::class, array(
+                'label' => "oc.advert.form.label.title",
+            ))
+            ->add('content', CkeditorType::class, array(
+                'label' => "oc.advert.form.label.content",
+            ))
             ->add('categories', EntityType::class, array(
                 'class'        => 'OCPlatformBundle:Category',
                 'choice_label' => 'name',
                 'multiple'     => true,
+                'label' => "oc.advert.form.label.category",
                 'required'     => false
                 // 'query_builder' => function(CategoryRepository $repository) use($pattern) {
                 //   return $repository->getLikeQueryBuilder($pattern);
                 // }
             ))
             ->add('published', CheckboxType::class, array(
+                'label' => "oc.advert.form.label.published",
                 'required' => false
             ))
-
-            ->add('save', SubmitType::class)
-
+            ->add('save', SubmitType::class, array(
+                'label' => "oc.advert.form.label.save",
+            ))
             ->addEventListener(
                 FormEvents::PRE_SET_DATA,
                     function(FormEvent $event) { 
@@ -81,7 +86,6 @@ class AdvertType extends AbstractType
 
                     }
             )
-
             ->addEventListener(
                 FormEvents::PRE_SUBMIT,
                     function (FormEvent $event) {
