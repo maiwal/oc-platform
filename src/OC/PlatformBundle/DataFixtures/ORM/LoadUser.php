@@ -1,42 +1,69 @@
 <?php
-// src/OC/UserBundle/DataFixtures/ORM/LoadUser.php
+// src/OC/PlatformBundle/DataFixtures/ORM/LoadAdvert.php
 
-namespace OC\UserBundle\DataFixtures\ORM;
+namespace OC\PlatformBundle\DataFixtures\ORM;
 
-use Doctrine\Common\DataFixtures\FixtureInterface;
+use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Common\Persistence\ObjectManager;
+
 use OC\UserBundle\Entity\User;
 
-class LoadUser implements FixtureInterface
+class LoadUser extends Fixture
 {
-
     public function load(ObjectManager $manager)
     {
+        // Création de la liste des utilisateurs à ajouter
+        $listUsers = array(
+            array(
+                'username' => 'eula',
+                'email' => 'eula@eula',
+            ),
+            array(
+                'username' => 'thao',
+                'email' => 'thao@thao',
+            ),
+            array(
+                'username' => 'beatris',
+                'email' => 'beatris@beatris',
+            ),
+            array(
+                'username' => 'reanna',
+                'email' => 'reanna@reanna',
+            ),
+            array(
+                'username' => 'quinn',
+                'email' => 'quinn@quinn',
+            ),
+            array(
+                'username' => 'tiffani',
+                'email' => 'tiffani@tiffani',
+            ),
+            array(
+                'username' => 'mariette',
+                'email' => 'mariette@mariette',
+            ),
+            array(
+                'username' => 'edna',
+                'email' => 'edna@edna',
+            ),
+            array(
+                'username' => 'nancee',
+                'email' => 'nancee@nancee',
+            ),
+            array(
+                'username' => 'dorthey',
+                'email' => 'dorthey@dorthey',
+            )
+        );
 
-        // Les noms d'utilisateurs à créer
-       /* $listNames = array('Alexandre', 'Marine', 'Anna');
-
-        foreach ($listNames as $name) {
-            
-            // On crée l'utilisateur
-            $user = new User;
-
-            // Le nom d'utilisateur et le mot de passe sont identiques pour l'instant
-            $user->setUsername($name);
-            $user->setPassword($name);
-
-            // On ne se sert pas du sel pour l'instant
-            $user->setSalt('');
-            // On définit uniquement le role ROLE_USER qui est le role de base
-            $user->setRoles(array('ROLE_USER'));
-
-            // On le persiste
-            $manager->persist($user);
+        foreach ($listUsers as $user) {
+            $newUser = new User();
+            $newUser->setEnabled(1);
+            $newUser->setEmail($user['email']);
+            $newUser->setUsername($user['username']);
+            $newUser->setPlainPassword('password');
+            $manager->persist($newUser);
         }
-
-        // On déclenche l'enregistrement
-        $manager->flush();*/
-
+        $manager->flush();
     }
-
 }

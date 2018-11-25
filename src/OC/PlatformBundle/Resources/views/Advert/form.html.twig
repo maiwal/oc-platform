@@ -1,39 +1,50 @@
 {# src/OC/PlatformBundle/Resources/views/Advert/form.html.twig #}
 
+<script src="{{ asset('bundles/ocplatform/ckeditor/ckeditor.js') }}"></script>
+
 <h3>{{ 'oc.advert.form.h3title'|trans }}</h3>
 
 <div class="well">
+    {% if advert.image is not null and advert.image.path != '' %}
+        <img
+                src="{{ advert.image.getRelativePath() | imagine_filter('my_thumb') }}"
+                alt="{{ 'oc.advert.form.altthumb'|trans }}"
+        />
+        <br/>
+        <br/>
+    {% endif %}
 
-	{% if advert.image is not null and advert.image.path != '' %}
+    {{ form(form) }}
 
-		<img src="{{ advert.image.getRelativePath() | imagine_filter('my_thumb') }}" alt="{{ 'oc.advert.form.altthumb'|trans }}" />
+    {#{{ form_start(form, {'attr': {'class': 'form-horizontal'}}) }}
 
-		<br/>
-		<br/> 
-		
-	{% endif %}
+    #}{# Les erreurs générales du formulaire. #}{#
+    {{ form_errors(form) }}
 
-	{{ form(form) }}
+    #}{# Génération du label + error + widget pour un champ. #}{#
+    {{ form_row(form.image) }}
 
-	{# {{ form_start(form) }}
+    {% if form.delete_image is defined %}
+        {{ form_row(form.delete_image) }}
+    {% endif %}
 
-	{% if form.date is defined %}
-	{{ form_row(form.date) }}
-	{% endif %}
+    {{ form_row(form.title) }}
 
-	{{ form_row(form.title) }}
-	{{ form_row(form.author) }}
-	{{ form_row(form.content) }}
-	{{ form_row(form.image) }}
-	{{ form_row(form.categories) }}
+    {{ form_row(form.content) }}
 
-	{{ form_widget(form.save, {'attr': {'class': 'btn btn-primary'}}) }}
+    {{ form_row(form.categories) }}
 
-	{{ form_rest(form) }}
+    {% if  form.published is defined %}
+        {{ form_row(form.published) }}
+    {% endif %}
 
-	{{ form_end(form) }} #}
+    {{ form_widget(form.save, {'attr': {'class': 'btn btn-primary'}}) }}
 
+    #}{# Génération automatique des champs pas encore écrits.
+       Dans cet exemple, ce serait le champ CSRF (géré automatiquement par Symfony !)
+       et tous les champs cachés (type « hidden »). #}{#
+    {{ form_rest(form) }}
+
+    {{ form_end(form) }}#}
 
 </div>
-
-<script src="{{ asset('bundles/ocplatform/ckeditor/ckeditor.js') }}"></script>

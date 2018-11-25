@@ -3,41 +3,38 @@
 namespace OC\PlatformBundle\Form;
 
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use Symfony\Component\Form\Extension\Core\Type\FileType;
 
-class ImageType extends AbstractType
+class ApplicationType extends AbstractType
 {
     /**
-    * {@inheritdoc}
-    */
+     * {@inheritdoc}
+     */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('imageFile',FileType::class, array(
-                'required' => false,
-                'label'    => 'oc.advert.form.label.selectimage',
-            ))
-        ;
+            ->add('content', TextType::class);
     }
 
     /**
-    * {@inheritdoc}
-    */
+     * {@inheritdoc}
+     */
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults(array(
-            'data_class' => 'OC\PlatformBundle\Entity\Image'
+            'data_class' => 'OC\PlatformBundle\Entity\Application'
         ));
     }
 
     /**
-    * {@inheritdoc}
-    */
+     * {@inheritdoc}
+     */
     public function getBlockPrefix()
     {
-        return 'oc_platformbundle_image';
+        return 'oc_platformbundle_application';
     }
+
 
 }

@@ -4,6 +4,9 @@
 namespace OC\PlatformBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Gedmo\Mapping\Annotation as Gedmo;
+
+use Gedmo\Timestampable\Traits\TimestampableEntity;
 
 /**
  * @ORM\Table(name="oc_application")
@@ -27,9 +30,9 @@ class Application
     private $id;
 
     /**
-    * @ORM\Column(name="author", type="string", length=255)
+     * @ORM\ManyToOne(targetEntity="OC\UserBundle\Entity\User", inversedBy="applications")
     */
-    private $author;
+    private $user;
 
     /**
     * @ORM\Column(name="content", type="text")
@@ -37,15 +40,24 @@ class Application
     private $content;
 
     /**
-    * @ORM\Column(name="date", type="datetime")
-    */
-    private $date;
+     * @var \DateTime $updated
+     *
+     * @Gedmo\Timestampable(on="update")
+     * @ORM\Column(type="datetime")
+     */
+    private $updated;
+
+    /**
+     * @var \DateTime $created
+     *
+     * @Gedmo\Timestampable(on="create")
+     * @ORM\Column(type="datetime")
+     */
+    private $created;
 
     public function __construct()
-    {   
-
-        $this->date = new \Datetime();
-
+    {
+        
     }
 
     /**
@@ -69,17 +81,6 @@ class Application
         return $this->id;
     }
 
-    public function setAuthor($author)
-    {
-        $this->author = $author;
-        return $this;
-    }
-
-    public function getAuthor()
-    {
-        return $this->author;
-    }
-
     public function setContent($content)
     {
         $this->content = $content;
@@ -89,17 +90,6 @@ class Application
     public function getContent()
     {
         return $this->content;
-    }
-
-    public function setDate(\Datetime $date)
-    {
-        $this->date = $date;
-        return $this;
-    }
-
-    public function getDate()
-    {
-        return $this->date;
     }
 
     /**
@@ -125,4 +115,75 @@ class Application
         return $this->advert;
     }
 
+    /**
+     * Set user.
+     *
+     * @param \OC\UserBundle\Entity\User|null $user
+     *
+     * @return Application
+     */
+    public function setUser(\OC\UserBundle\Entity\User $user = null)
+    {
+        $this->user = $user;
+
+        return $this;
+    }
+
+    /**
+     * Get user.
+     *
+     * @return \OC\UserBundle\Entity\User|null
+     */
+    public function getUser()
+    {
+        return $this->user;
+    }
+
+    /**
+     * Set updated.
+     *
+     * @param \DateTime $updated
+     *
+     * @return Application
+     */
+    public function setUpdated($updated)
+    {
+        $this->updated = $updated;
+
+        return $this;
+    }
+
+    /**
+     * Get updated.
+     *
+     * @return \DateTime
+     */
+    public function getUpdated()
+    {
+        return $this->updated;
+    }
+
+    /**
+     * Set created.
+     *
+     * @param \DateTime $created
+     *
+     * @return Application
+     */
+    public function setCreated($created)
+    {
+        $this->created = $created;
+
+        return $this;
+    }
+
+    /**
+     * Get created.
+     *
+     * @return \DateTime
+     */
+    public function getCreated()
+    {
+        return $this->created;
+    }
 }

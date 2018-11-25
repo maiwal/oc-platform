@@ -8,6 +8,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 use Symfony\Component\Validator\Constraints as Assert;
+use Gedmo\Timestampable\Traits\TimestampableEntity;
 
 use Symfony\Component\Validator\Context\ExecutionContextInterface;
 
@@ -38,9 +39,20 @@ class Advert
     private $nbApplications;
 
     /**
-    * @ORM\Column(name="updated_at", type="datetime", nullable=true)
-    */
-    private $updatedAt;
+     * @var \DateTime $updated
+     *
+     * @Gedmo\Timestampable(on="update")
+     * @ORM\Column(type="datetime")
+     */
+    private $updated;
+
+    /**
+     * @var \DateTime $created
+     *
+     * @Gedmo\Timestampable(on="create")
+     * @ORM\Column(type="datetime")
+     */
+    private $created;
 
     /**
     * @ORM\OneToMany(targetEntity="OC\PlatformBundle\Entity\Application", mappedBy="advert", cascade={"persist","remove"})
@@ -61,14 +73,6 @@ class Advert
     * @ORM\GeneratedValue(strategy="AUTO")
     */
     private $id;
-
-    /**
-    * @var \DateTime
-    *
-    * @ORM\Column(name="date", type="datetime")
-    * @Assert\DateTime()
-    */
-    private $date;
 
     /**
     * @var string
@@ -109,7 +113,6 @@ class Advert
 
     public function __construct()
     {
-        $this->date           = new \Datetime();
         $this->published      = false;
         $this->categories     = new ArrayCollection();
         $this->applications   = new ArrayCollection();
@@ -159,7 +162,7 @@ class Advert
     */
     public function updateDate()
     {
-        $this->setUpdatedAt(new \Datetime());
+//        $this->setUpdatedAt(new \Datetime());
     }
 
     /**
@@ -170,29 +173,6 @@ class Advert
     public function getId()
     {
         return $this->id;
-    }
-
-    /**
-    * Set date
-    *
-    * @param \DateTime $date
-    *
-    * @return Advert
-    */
-    public function setDate($date)
-    {
-        $this->date = $date;
-        return $this;
-    }
-
-    /**
-    * Get date
-    *
-    * @return \DateTime
-    */
-    public function getDate()
-    {
-        return $this->date;
     }
 
     /**
@@ -240,7 +220,6 @@ class Advert
     {
         return $this->content;
     }
-
 
     /**
     * Set published
@@ -330,29 +309,6 @@ class Advert
     public function getApplications()
     {
         return $this->applications;
-    }
-
-    /**
-    * Set updatedAt
-    *
-    * @param \DateTime $updatedAt
-    *
-    * @return Advert
-    */
-    public function setUpdatedAt($updatedAt)
-    {
-        $this->updatedAt = $updatedAt;
-        return $this;
-    }
-
-    /**
-    * Get updatedAt
-    *
-    * @return \DateTime
-    */
-    public function getUpdatedAt()
-    {
-        return $this->updatedAt;
     }
 
     /**
@@ -466,8 +422,12 @@ class Advert
         $forbiddenWords = array(
             'connards',
             'connard',
+            'conards',
+            'conard',
             'enculé',
-            'enculés'
+            'encul&eacute;',
+            'enculés',
+            'encul&eacute;s'
         );
 
         // On vérifie que le contenu ne contient pas l'un des mots
@@ -475,8 +435,14 @@ class Advert
 
             // La règle est violée, on définit l'erreur
             $context
-                ->buildViolation('Contenu invalide, grossier personnage...') // message
+                ->buildViolation('Vulgarité detectée...')// message
                 ->atPath('content') // attribut de l'objet qui est violé
+                ->addViolation() // ceci déclenche l'erreur, ne l'oubliez pas
+            ;
+            // La règle est violée, on définit l'erreur
+            $context
+                ->buildViolation('Vulgarité detectée...')// message
+                ->atPath('title')// attribut de l'objet qui est violé
                 ->addViolation() // ceci déclenche l'erreur, ne l'oubliez pas
             ;
         }
@@ -505,5 +471,53 @@ class Advert
     public function getUser()
     {
         return $this->user;
+    }
+
+    /**
+     * Set updated.
+     *
+     * @param \DateTime $updated
+     *
+     * @return Advert
+     */
+    public function setUpdated($updated)
+    {
+        $this->updated = $updated;
+
+        return $this;
+    }
+
+    /**
+     * Get updated.
+     *
+     * @return \DateTime
+     */
+    public function getUpdated()
+    {
+        return $this->updated;
+    }
+
+    /**
+     * Set created.
+     *
+     * @param \DateTime $created
+     *
+     * @return Advert
+     */
+    public function setCreated($created)
+    {
+        $this->created = $created;
+
+        return $this;
+    }
+
+    /**
+     * Get created.
+     *
+     * @return \DateTime
+     */
+    public function getCreated()
+    {
+        return $this->created;
     }
 }

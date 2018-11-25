@@ -82,6 +82,7 @@ stof_doctrine_extensions:
     orm:
         default:
             sluggable: true
+            timestampable: true
 
 # Pagination configuration
 knp_paginator:
@@ -108,9 +109,9 @@ liip_imagine :
                 thumbnail  : { size : [100, ], mode : outbound }
                 # background : { size : [124, 94], position : center, color : '#ffffff' }
         image_medium :
-            quality: 75
+            quality: 90
             filters :
-                thumbnail  : { size : [400, ], mode : outbound }
+                thumbnail: { size: [600, ], mode: outbound }
 
 fos_user:
     db_driver:     orm                       # Le type de BDD à utiliser, nous utilisons l'ORM Doctrine depuis le début

@@ -1,0 +1,21 @@
+{# src/OC/PlatformBundle/Resources/view/Advert/view.html.twig #}
+
+{% extends "OCPlatformBundle::layout.html.twig" %}
+
+{% block title %}
+
+    Zone de test
+
+{% endblock %}
+
+{% block ocplatform_body %}
+
+    Liste des compétences :
+
+    <ul>
+        {% for advert in listAdverts %}
+            <li>{{ advert.title }}</li>
+        {% endfor %}
+    </ul>
+
+{% endblock %}

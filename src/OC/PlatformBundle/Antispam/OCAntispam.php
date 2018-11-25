@@ -7,13 +7,10 @@ class OCAntispam
 {
 
     private $minLength;
-    private $locale;
 
     public function __construct($minLength)
     {
-
         $this->minLength = (int) $minLength;
-
     }
 
     /**
@@ -25,11 +22,6 @@ class OCAntispam
     public function isSpam($text)
     {
         return strlen($text) < $this->minLength;
-    }
-
-    public function setLocale($locale)
-    {
-        $this->locale = $locale;
     }
 
 }

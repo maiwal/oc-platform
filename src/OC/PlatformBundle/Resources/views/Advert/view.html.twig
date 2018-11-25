@@ -3,7 +3,9 @@
 {% extends "OCPlatformBundle::layout.html.twig" %}
 
 {% block title %}
+
     {{ 'oc.advert.view.balisetitle'|trans }} - {{ parent() }}
+
 {% endblock %}
 
 {% block ocplatform_body %}
@@ -11,17 +13,17 @@
     {# On vérifie qu'une image soit bien associée à l'annonce #}
     {% if advert.image is not null %}
 
-        <img 
-            src="{{ advert.image.getRelativePath() | imagine_filter('image_medium') }}"
-            alt="{% if advert.image.alt is not null %}{{ advert.image.alt }}{% else %}{{ advert.title }}{% endif %}"
-            title="{% if advert.image.title is not null %}{{ advert.image.title }}{% else %}{{ advert.title }}{% endif %}"
+        <img
+                src="{{ advert.image.getRelativePath() | imagine_filter('image_medium') }}"
+                alt="{% if advert.image.alt is not null %}{{ advert.image.alt }}{% else %}{{ advert.title }}{% endif %}"
+                title="{% if advert.image.title is not null %}{{ advert.image.title }}{% else %}{{ advert.title }}{% endif %}"
         />
 
     {% endif %}
 
     <h2>{{ advert.title }}</h2>
 
-    <i>{{ 'oc.advert.view.byanddate'|trans({'%author%': advert.user.username,'%date%': advert.date|date('d/m/Y')}) }}</i>
+    <i>{{ 'oc.advert.view.byanddate'|trans({'%author%': advert.user.username,'%date%': advert.created|date('d/m/Y')}) }}</i>
 
     <div class="well">
         {{ advert.content|purify }}
@@ -38,11 +40,9 @@
                 <li>
 
                     {{ application.content }}
-
-                    {{ 'oc.application.byanddate'|trans({'%author%': advert.user.username,'%date%': advert.date|date('d/m/Y')}) }}
-                   {#  par {{ application.author }},
-
-                    le {{ application.date|date('d/m/Y') }} #}
+                    <br>
+                    <br>
+                    <i>{{ 'oc.application.byanddate'|trans({'%author%': application.user.username,'%date%': advert.created|date('d/m/Y')}) }}</i>
 
                 </li>
 
@@ -95,7 +95,7 @@
 
                 {% if not loop.last %}, {% else %}.{% endif %}
 
-                <br />
+                <br/>
 
             {% endfor %}
 
@@ -106,7 +106,7 @@
     {% endif %}
 
     <p>
-        
+
         <a href="{{ path('oc_platform_home') }}" class="btn btn-default">
             <i class="glyphicon glyphicon-chevron-left"></i>
             {{ 'oc.advert.view.button.backtolistadvert'|trans }}

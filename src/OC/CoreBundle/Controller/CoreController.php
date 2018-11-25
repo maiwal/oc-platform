@@ -22,7 +22,7 @@ class CoreController extends Controller
             "La page de contact n'est pas encore disponible."
         );
 
-        return $this->redirectToRoute('core_homepage');
+        return $this->redirectToRoute('oc_platform_home');
         // return $this->render('CoreBundle:Core:contact.html.twig');
           
     }

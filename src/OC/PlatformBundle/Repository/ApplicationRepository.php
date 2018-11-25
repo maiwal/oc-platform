@@ -11,9 +11,9 @@ namespace OC\PlatformBundle\Repository;
 class ApplicationRepository extends \Doctrine\ORM\EntityRepository
 {
 
+    // récupère les X dernières candidatures avec leur annonce associée
 	public function getApplicationsWithAdvert($limit)
 	{
-
 		return $this->createQueryBuilder('a')
 			->leftJoin('a.advert', 'adv')
 		  	->addSelect('adv')

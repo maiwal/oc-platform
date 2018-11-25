@@ -10,54 +10,170 @@ namespace OC\PlatformBundle\Repository;
  */
 
 use Doctrine\ORM\EntityRepository;
+use Doctrine\ORM\QueryBuilder;
 
 class AdvertRepository extends EntityRepository
 {
 
-	// comme findAll mais ne retourne pas un résultat, mais une requète
-	public function getAdverts()
-	{
+    // comme findAll mais ne retourne pas un résultat, mais une requète
+    public function getAdverts()
+    {
+        return $this->createQueryBuilder('a')
+            ->orderBy('a.created', 'DESC')
+            ->getQuery();
+    }
 
-		return $this->createQueryBuilder('a')
-		    ->orderBy('a.date', 'DESC')
-	    	->getQuery()
-		;
-	}
+    public function getAdvert($id)
+    {
+        return $this->createQueryBuilder('a')
+            ->where('a.id = :id')
+            ->setParameter('id', $id)
+            ->leftJoin('a.categories', 'c')
+            ->addSelect('c')
+            ->leftJoin('a.user', 'u')
+            ->addSelect('u')
+            ->leftJoin('a.applications', 'app')
+            ->addSelect('app')
+            ->leftJoin('a.skills', 's')
+            ->addSelect('s')
+//            ->leftJoin('s.skill', 'skill')
+//            ->addSelect('skill')
+            ->leftJoin('a.image', 'i')
+            ->addSelect('i')
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
 
-	public function getAdvert($id)
-	{
+    public function getAdvertToPurge($date)
+    {
+        return $this->createQueryBuilder('a')
+            ->where('a.updatedAt < :last')
+            ->orWhere('a.updatedAt IS NULL AND a.date <= :last')// Si la date de modification est vide, on vérifie la date de création
+            ->andWhere('a.applications is empty')
+            ->setParameter('last', $date)// récupère toutes les annonces dont la date de modification est plus vieille que X jours
+            ->getQuery()
+            ->getResult();
+    }
 
-		return $this->createQueryBuilder('a')
-	    ->where('a.id = :id')
-	    ->setParameter('id', $id)
-	    ->leftJoin('a.categories', 'c')
-	    ->addSelect('c')
-	    ->leftJoin('a.user', 'u')
-	    ->addSelect('u')
-	    ->leftJoin('a.applications', 'app')
-	    ->addSelect('app')
-	    ->leftJoin('a.skills', 's')
-	    ->addSelect('s')
-	    ->leftJoin('s.skill', 'skill')
-	    ->addSelect('skill')
-	    ->leftJoin('a.image', 'i')
-	    ->addSelect('i')
-    	->getQuery()
-    	->getOneOrNullResult()
-		;
-	}
+    public function getAdvertWithCategoriesWithQB(array $categoryNames)
+    {
+        //version avec query builder
+        $qb =
+            $this
+                ->createQueryBuilder('a')
+                ->leftJoin('a.categories', 'c')
+                ->addSelect('c');
 
-	public function getAdvertToPurge($date)
-	{
+        $i = 0;
+        foreach ($categoryNames as $categoryName) {
+            $i++;
+            if ($i > 1)
+                $qb
+                    ->orWhere('c.name = :categoryName' . $i)
+                    ->setParameter('categoryName' . $i, $categoryName);
+            else
+                $qb
+                    ->where('c.name = :categoryName' . $i)
+                    ->setParameter('categoryName' . $i, $categoryName);
+        }
 
-		return $this->createQueryBuilder('a')
-			->where('a.updatedAt < :last')
-			->orWhere('a.updatedAt IS NULL AND a.date <= :last') // Si la date de modification est vide, on vérifie la date de création
-			->andWhere('a.applications is empty')
-			->setParameter('last', $date) // récupère toutes les annonces dont la date de modification est plus vieille que X jours
-			->getQuery()
-			->getResult()
-		;
-	}
+        return $qb
+            ->getQuery()
+            ->getResult();
+    }
 
+    public function getAdvertWithCategoriesWithDQL(array $categoryNames)
+    {
+        // version en dql
+        $dqlquery = 'SELECT a, c FROM OCPlatformBundle:Advert a LEFT JOIN a.categories c';
+
+        $i = 0;
+        foreach ($categoryNames as $categoryName) {
+            $i++;
+            if ($i == 1)
+                $dqlquery .= ' WHERE c.name = :categoryName' . $i;
+            else
+                $dqlquery .= ' OR c.name = :categoryName' . $i;
+            $params[] = $categoryName;
+        }
+
+        $query = $this->_em->createQuery($dqlquery);
+
+        $i = 0;
+        foreach ($params as $param) {
+            $i++;
+            $query->setParameter('categoryName' . $i, $param);
+        }
+        return $query->getResult();
+    }
+
+    public function getAdvertWithCategories(array $categoryNames)
+    {
+        //solution correction
+        $qb =
+            $this
+                ->createQueryBuilder('a')
+                ->innerJoin('a.categories', 'c')
+                ->addSelect('c');
+
+        $qb->where($qb->expr()->in('c.name', $categoryNames));
+
+        return $qb
+            ->getQuery()
+            ->getResult();
+    }
+
+    public function myFindAll()
+    {
+        return $this
+            ->createQueryBuilder('a')
+            ->getQuery()
+            ->getResult();
+    }
+
+    public function myFindOne($id)
+    {
+        $qb = $this->createQueryBuilder('a');
+
+        $qb
+            ->where('a.id = :id')
+            ->setParameter('id', $id);
+
+        return $qb
+            ->getQuery()
+            ->getResult();
+    }
+
+    public function whereCurrentYear(QueryBuilder $qb)
+    {
+        $qb
+            ->andWhere('a.date BETWEEN :start AND :end')
+            ->setParameter('start', new \DateTime(date('Y') . '-01-01'))
+            ->setParameter('end', new \DateTime(date('Y') . '-12-31'));
+    }
+
+    public function myFind()
+    {
+        $qb = $this->createQueryBuilder('a');
+
+        $qb
+            ->where('a.title = :title')
+            ->setParameter('title', 'Mission de webmaster');
+
+        $this->whereCurrentYear($qb);
+
+        $qb->orderBy('a.date', 'desc');
+
+        return $qb
+            ->getQuery()
+            ->getResult();
+    }
+
+    public function myFindDQL($id)
+    {
+        $query = $this->_em->createQuery('SELECT a FROM OCPlatformBundle:Advert a WHERE a.id = :id');
+        $query->setParameter('id', $id);
+
+        return $query->getSingleResult();
+    }
 }

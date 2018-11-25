@@ -2,7 +2,7 @@
 {% for message in app.session.flashbag.get('info') %}         
     <div class="alert alert-info fade in">
         <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
-        <strong>Info :</strong> {{ message }}
+        <strong>{{ 'oc.core.messageflash.info'|trans }}</strong> {{ message }}
     </div>
 {% endfor %}
 
@@ -10,20 +10,20 @@
 
     <div class="alert alert-success fade in">
         <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
-        <strong>Succès :</strong> {{ message }}
+        <strong>{{ 'oc.core.messageflash.success'|trans }}</strong> {{ message }}
     </div>
 {% endfor %}
 
 {% for message in app.session.flashbag.get('warning') %}
     <div class="alert alert-warning fade in">
         <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
-        <strong>Attention :</strong> {{ message }}
+        <strong>{{ 'oc.core.messageflash.warning'|trans }}</strong> {{ message }}
     </div>
 {% endfor %}
 
 {% for message in app.session.flashbag.get('danger') %}
     <div class="alert alert-danger fade in">
         <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
-        <strong>Erreur :</strong> {{ message }}
+        <strong>{{ 'oc.core.messageflash.error'|trans }}</strong> {{ message }}
     </div>
 {% endfor %}

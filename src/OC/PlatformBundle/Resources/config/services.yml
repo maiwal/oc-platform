@@ -37,8 +37,6 @@ services:
         class: OC\PlatformBundle\Antispam\OCAntispam
         arguments:
             - 50
-        calls:
-            - [ setLocale, [%locale%] ]
 
     oc_platform.twig.antispam_extension:
         class: OC\PlatformBundle\Twig\AntispamExtension

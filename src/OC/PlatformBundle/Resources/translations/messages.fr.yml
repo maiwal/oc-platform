@@ -18,6 +18,14 @@ oc:
                 Aujourd'hui nous sommes le %date%
                 et il est %heure%
         footerphrase: Le ciel est la limite © %date% et au-delà.
+        index:
+          balisetitle: Accueil
+          h4title: Dernières annonces
+        messageflash:
+          info: "Info :"
+          success: "Succès :"
+          error: "Erreur :"
+          warning: "Attention :"
     advert:
         maintitle: Annonces
         sidebar:
@@ -41,6 +49,7 @@ oc:
                 title: Titre de votre annonce
                 content: Décrivez ici votre annonce
                 category: Selectionez une ou plusieurs catégories appartenant à l'annonce
+                skill: Selectionez une ou plusieurs compétences requises pour cette annonce
                 published: Publier l'annonce
                 save: Enregister l'annonce
             h3title: Formulaire d'annonce
@@ -67,7 +76,7 @@ oc:
             balisetitle: Lecture d'une annonce
             byanddate: Annonce publié par %author%, le %date%
             h2title: Liste des candidatures pour cette annonce
-            thisadvertisinthesecathegories: "Cette annonce requière les compétences suivantes :"
+            thisadvertisinthesecathegories: "Cette annonce est dans les catégories suivantes :"
             thisadvertneedsskills: "Cette annonce requière les compétences suivantes :"
             button:
                 backtolistadvert: Retour à la liste

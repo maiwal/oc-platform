@@ -3,12 +3,12 @@
 {% extends "OCCoreBundle::layout.html.twig" %}
 
 {% block title %}
- 	Accueil - {{ parent() }}
+    {{ 'oc.core.index.balisetitle'|trans }} - {{ parent() }}
 {% endblock %}
 
 {% block body %}
 
-  <h4>Dernières annonces</h4>
+    <h4>{{ 'oc.core.index.h4title'|trans }}</h4>
 
   {{ render(controller("OCPlatformBundle:Advert:menu", {'limit': 3})) }}
   

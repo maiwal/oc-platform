@@ -22,7 +22,7 @@
 
                 {{ 'oc.advert.index.byanddate'|trans({
                         '%author%': advert.user.username,
-                        '%date%': advert.date|date('d/m/Y')
+                    '%date%': advert.created|date('d/m/Y')
                     })
                 }}
 

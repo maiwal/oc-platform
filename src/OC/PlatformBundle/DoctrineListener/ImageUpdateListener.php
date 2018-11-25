@@ -16,14 +16,11 @@ class ImageUpdateListener
 
     public function __construct(ContainerInterface $container)
     {
-
         $this->container = $container;
-
     }
 
     public function preUpdate(LifecycleEventArgs $args)
     {
-
         $entity = $args->getObject();
 
         if (!$entity instanceof Image)
@@ -36,12 +33,10 @@ class ImageUpdateListener
 
         if ($entity->oldFile != null)
             $liipCacheManager->remove($entity->oldFile);
-
     }
 
     public function preRemove(LifecycleEventArgs $args)
     {
-
         $entity = $args->getObject();
 
         if (!$entity instanceof Image)
@@ -51,7 +46,6 @@ class ImageUpdateListener
 
         if ($entity->getRelativePath() != null)
             $liipCacheManager->remove($entity->getRelativePath());
-
     }
 
 }

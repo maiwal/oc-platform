@@ -17,14 +17,11 @@ class ApplicationCreationListener
 
     public function __construct(ApplicationMailer $applicationMailer)
     {
-
         $this->applicationMailer = $applicationMailer;
-
     }
 
     public function postPersist(LifecycleEventArgs $args)
     {
-
         $entity = $args->getObject();
 
         // On ne veut envoyer un email que pour les entités Application
@@ -32,7 +29,6 @@ class ApplicationCreationListener
             return;
 
         $this->applicationMailer->sendNewNotification($entity);
-
     }
 
 }

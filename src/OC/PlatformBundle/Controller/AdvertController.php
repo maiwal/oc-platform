@@ -4,6 +4,7 @@
 
 namespace OC\PlatformBundle\Controller;
 
+use OC\PlatformBundle\Entity\Hoplie;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 
 use Symfony\Component\HttpFoundation\Request;
@@ -17,8 +18,65 @@ use OC\PlatformBundle\Form\AdvertEditType;
 use OC\PlatformBundle\Event\PlatformEvents;
 use OC\PlatformBundle\Event\MessagePostEvent;
 
+use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
+use Symfony\Component\Form\Extension\Core\Type\DateType;
+use Symfony\Component\Form\Extension\Core\Type\FormType;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+use Symfony\Component\Form\Extension\Core\Type\TextareaType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Form\Extension\Core\Type\EmailType;
+use Symfony\Component\Form\Extension\Core\Type\NumberType;
+
 class AdvertController extends Controller
 {
+
+    public function postAction(Request $request)
+    {
+        $hoplie = new Hoplie();
+
+        $formBuilder = $this->get('form.factory')->createBuilder(FormType::class, $hoplie);
+
+        $formBuilder
+            ->add('nom', TextType::class)
+            ->add('prenom', TextType::class)
+            ->add('email', EmailType::class)
+            ->add('adresse', TextType::class)
+            ->add('codepostal', NumberType::class)
+            ->add('ville', TextType::class)
+            ->add('message', TextareaType::class)
+            ->add('Enregistrer', SubmitType::class);
+
+        $form = $formBuilder->getForm();
+
+        $em = $this->getDoctrine()->getManager();
+
+        if ($request->isMethod('POST')) {
+            $form->handleRequest($request);
+
+            if ($form->isValid()) {
+                $em->persist($hoplie);
+                $em->flush();
+            }
+        }
+
+        return $this->render('OCPlatformBundle:Advert:post.html.twig', array(
+            'form' => $form->createView(),
+        ));
+    }
+
+    public function testAction()
+    {
+        $repository = $this
+            ->getDoctrine()
+            ->getManager()
+            ->getRepository('OCPlatformBundle:Advert');
+
+        $listAdverts = $repository->getAdvertWithCategories(array('Développeur PHP', 'Intégration', 'Spécialiste Symfony'));
+
+        return $this->render('OCPlatformBundle:Advert:test.html.twig', array(
+            'listAdverts' => $listAdverts
+        ));
+    }
 
     public function indexAction($page)
     {
@@ -26,16 +84,16 @@ class AdvertController extends Controller
         if ($page == '') $page = 1;
 
         if ($page < 0)
-            throw new NotFoundHttpException('Page "'.$page.'" inexistante.');
+            throw new NotFoundHttpException('Page "' . $page . '" inexistante.');
 
-        $pagination = $this->getDoctrine()
+        $pagination = $this
+            ->getDoctrine()
             ->getManager()
             ->getRepository('OCPlatformBundle:Advert')
-            ->getAdverts()
-        ;
+            ->getAdverts();
 
         // Creating pagnination
-        $paginator  = $this->get('knp_paginator');
+        $paginator = $this->get('knp_paginator');
         $listAdverts = $paginator->paginate(
             $pagination, /* query NOT result */
             $page, /*page number*/
@@ -60,11 +118,10 @@ class AdvertController extends Controller
 
         $advert = $em
             ->getRepository('OCPlatformBundle:Advert')
-            ->getAdvert($id)
-        ;
+            ->getAdvert($id);
 
         if (null === $advert)
-            throw new NotFoundHttpException("L'annonce d'id ".$id." n'existe pas.");
+            throw new NotFoundHttpException("L'annonce d'id " . $id . " n'existe pas.");
 
         return $this->render('OCPlatformBundle:Advert:view.html.twig', array(
             'advert' => $advert
@@ -73,8 +130,8 @@ class AdvertController extends Controller
     }
 
     /**
-    * @Security("has_role('ROLE_USER')")
-    */
+     * @Security("has_role('ROLE_USER')")
+     */
     public function addAction(Request $request)
     {
 
@@ -105,18 +162,15 @@ class AdvertController extends Controller
                 $request
                     ->getSession()
                     ->getFlashBag()
-                    ->add('success', 'Annonce bien enregistrée.')
-                ;
+                    ->add('success', 'Annonce bien enregistrée.');
 
                 return $this->redirectToRoute('oc_platform_view', array('id' => $advert->getId()));
-            }
-            else {
+            } else {
 
                 $request
                     ->getSession()
                     ->getFlashBag()
-                    ->add('warning', 'Il y des erreurs dans le formulaire, veuillez reessayer.')
-                ;
+                    ->add('warning', 'Il y des erreurs dans le formulaire, veuillez reessayer.');
             }
         }
 
@@ -129,16 +183,14 @@ class AdvertController extends Controller
 
     public function editAction($id, Request $request)
     {
-
         $em = $this->getDoctrine()->getManager();
 
         $advert = $em
-        ->getRepository('OCPlatformBundle:Advert')
-        ->getAdvert($id)
-        ;
+            ->getRepository('OCPlatformBundle:Advert')
+            ->getAdvert($id);
 
         if (null === $advert)
-            throw new NotFoundHttpException("L'annonce d'id ".$id." n'existe pas.");
+            throw new NotFoundHttpException("L'annonce d'id " . $id . " n'existe pas.");
 
         $form = $this->createForm(AdvertEditType::class, $advert);
 
@@ -153,21 +205,18 @@ class AdvertController extends Controller
                 $request
                     ->getSession()
                     ->getFlashBag()
-                    ->add('success', 'Annonce bien modifiée.')
-                ;
+                    ->add('success', 'Annonce bien modifiée.');
 
                 return $this->redirectToRoute(
                     'oc_platform_view',
                     array('id' => $advert->getId())
                 );
-            }
-            else {
+            } else {
 
                 $request
-                  ->getSession()
-                  ->getFlashBag()
-                  ->add('warning', 'Il y des erreurs dans le formulaire, veuillez reessayer.')
-                ;
+                    ->getSession()
+                    ->getFlashBag()
+                    ->add('warning', 'Il y des erreurs dans le formulaire, veuillez reessayer.');
             }
         }
 
@@ -178,7 +227,7 @@ class AdvertController extends Controller
 
     }
 
-    public function deleteAction($id,Request $request)
+    public function deleteAction($id, Request $request)
     {
 
         $em = $this->getDoctrine()->getManager();
@@ -186,7 +235,7 @@ class AdvertController extends Controller
         $advert = $em->getRepository('OCPlatformBundle:Advert')->find($id);
 
         if (null === $advert)
-            throw new NotFoundHttpException("L'annonce d'id ".$id." n'existe pas.");
+            throw new NotFoundHttpException("L'annonce d'id " . $id . " n'existe pas.");
 
         // On crée un formulaire vide, qui ne contiendra que le champ CSRF
         // Cela permet de protéger la suppression d'annonce contre cette faille
@@ -200,36 +249,35 @@ class AdvertController extends Controller
             $request
                 ->getSession()
                 ->getFlashBag()
-                ->add('success',"L'annonce a bien été supprimée.")
-            ;
+                ->add('success', "L'annonce a bien été supprimée.");
 
             return $this->redirectToRoute('oc_platform_home');
         }
 
         return $this->render('OCPlatformBundle:Advert:delete.html.twig', array(
             'advert' => $advert,
-            'form'   => $form->createView(),
+            'form' => $form->createView(),
         ));
 
     }
 
-	public function menuAction($limit)
-	{
-  	
+    public function menuAction($limit)
+    {
+
         $em = $this->getDoctrine()->getManager();
 
         $listAdverts = $em->getRepository('OCPlatformBundle:Advert')
             ->findBy(
                 array(),
                 array('id' => 'desc'),
-                $limit    
-        );
+                $limit
+            );
 
         return $this->render('OCPlatformBundle:Advert:menu.html.twig', array(
-        	'listAdverts' => $listAdverts
+            'listAdverts' => $listAdverts
         ));
 
-	}
+    }
 
     public function purgeAction($days, Request $request)
     {
@@ -242,8 +290,7 @@ class AdvertController extends Controller
         $request
             ->getSession()
             ->getFlashBag()
-            ->add('success',"La purge a bien été effectué sur les annonces n'ayant pas été modifié depuis plus de ".$days." jours.")
-        ;
+            ->add('success', "La purge a bien été effectué sur les annonces n'ayant pas été modifié depuis plus de " . $days . " jours.");
 
         return $this->redirectToRoute('oc_platform_home');
 
@@ -263,14 +310,13 @@ class AdvertController extends Controller
             $request
                 ->getSession()
                 ->getFlashBag()
-                ->add('success',"La purge totale bien été effectué sur les annonces.")
-            ;
+                ->add('success', "La purge totale bien été effectué sur les annonces.");
 
             return $this->redirectToRoute('oc_platform_home');
         }
 
         return $this->render('OCPlatformBundle:Advert:purgetotale.html.twig', array(
-            'form'   => $form->createView(),
+            'form' => $form->createView(),
         ));
 
         // $this->get('oc_platform.purger.advert')->purgeTotale();
@@ -296,11 +342,10 @@ class AdvertController extends Controller
         $pagination = $this->getDoctrine()
             ->getManager()
             ->getRepository('OCPlatformBundle:Category')
-            ->getCategories()
-        ;
+            ->getCategories();
 
         // Creating pagnination
-        $paginator  = $this->get('knp_paginator');
+        $paginator = $this->get('knp_paginator');
         $listCategories = $paginator->paginate(
             $pagination, /* query NOT result */
             $page, /*page number*/
