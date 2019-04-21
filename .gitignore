@@ -19,3 +19,4 @@
 /web/uploads/*
 /symfony.phar
 /nbproject/private/
+/.idea
